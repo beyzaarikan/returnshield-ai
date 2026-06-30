@@ -1,55 +1,86 @@
-# ReturnShield AI
+## Ürün İsmi
+ReturnShield AI
 
-E-ticarette iade riskini önceden tespit eden AI destekli yönetim paneli.
+## Takım İsmi
+Grup 77
 
-## Takım
+## Takım Üyeleri
 
 | Kişi | Rol |
 |------|-----|
-| Takım Üyesi | Backend + AI Lead |
-| Takım Üyesi 1 | Frontend |
-| Takım Üyesi 2 | Data / ML |
+|Beyza Şefika Arıkan | Backend + AI Lead |
+|Taibenur Yavuz | Frontend |
+|Osman Şahan | Data / ML |
 
-## Proje Yapısı
+## Ürün İle İlgili Bilgiler
 
-```
-returnshield-ai/
-├── docker-compose.yml
-├── backend/          ← FastAPI + PostgreSQL
-├── frontend/         ← Dashboard (HTML + Tailwind)
-└── notebooks/        ← EDA + ML modelleri
-```
+#Ürün Açıklaması
+ReturnShield AI, moda e-ticaretinde satın alma öncesi iade riskini tespit eden agentic AI tabanlı bir karar destek sistemidir. Sepet davranışı, ürün yorumları ve müşteri geçmişini analiz ederek risk skoru üretir, riskin nedenini açıklar ve hem müşteriye hem işletmeye doğru aksiyonu önerir.
 
----
+# Ürün Özellikleri
+Sepet analizi: aynı üründen birden fazla beden, gece alışverişi gibi davranışsal sinyaller
+Yorum analizinden beden/renk/kalite şikayeti tespiti
+ML destekli risk skoru (XGBoost/Random Forest)
+Agentic AI mimarisi: Orchestrator, Signal, Risk, Action agent'ları
+Müşteri ekranında yumuşak, manipülatif olmayan uyarı mesajı
+İşletme dashboard'unda riskli sipariş listesi ve aksiyon önerileri
+Sürdürülebilirlik farkındalığı (önlenen iade ile CO₂/kargo tasarrufu)
 
-## Repo'yu İlk Kez Kurma
+# Hedef Kitle
+Moda/tekstil/ayakkabı kategorisinde satış yapan e-ticaret işletmeleri ve bu platformlardan alışveriş yapan online müşteriler. İşletme tarafında kategori yöneticileri ve müşteri destek ekipleri; müşteri tarafında satın alma kararı verirken emin olamayan kullanıcılar.
+
+### Sprint 1
+
+*Backlog Düzeni ve Story Seçimleri*
+Backlog, ilk yapılacak görevlere göre önceliklendirilmiştir. Her sprint için tahmin edilen puan sınırını aşmayacak şekilde sıradan seçimler yapılmaktadır. Görevler backend, frontend ve data/ML olmak üzere üç ana sorumluluk alanına bölünmüş, her alan kendi içinde bağımsız çalışabilecek şekilde tasarlanmıştır.
+
+GitHub Projects board'unda kartlar Backlog → Sprint 1 → In Progress  → Done kolonlarında takip edilmektedir. Her kart bir görevi temsil eder ve ilgili kişiye atanmıştır.
+
+https://github.com/users/beyzaarikan/projects/2/views/1?layout=board
+<img width="400" height="600" alt="image" src="https://github.com/user-attachments/assets/6e80a03b-7292-4571-8b21-584457046a14" />
+<br>
+<img width="1289" height="818" alt="image" src="https://github.com/user-attachments/assets/7c5cfa49-11d6-4a27-8c77-a3f4eb24eaa2" />
+
+
+*Daily Scrum*
+
+Daily Scrum toplantıları zamansal sebeplerden ötürü WhatsApp üzerinden yazılı olarak yapılmaktadır. Notlar [ProjectManagement/SprintXDocuments/DailyScrumNotes.md](https://github.com/beyzaarikan/returnshield-ai/blob/main/ProjectManagement/Sprint1Documents/Sprint1Documents/DailyScrumNotes.md) dosyasında tutulur.
+
+*Sprint 1 Review'da alınan kararlar:*
+
+Her sprint sonunda tamamlanan görevler ve çalışan ürün ekran görüntüleri ile birlikte gözden geçirilir. Sprint Review notları [ProjectManagement/SprintXDocuments/SprintReview.md](https://github.com/beyzaarikan/returnshield-ai/blob/main/ProjectManagement/Sprint1Documents/Sprint1Documents/SprintReview.md) dosyasında, acceptance criteria'ların karşılanıp karşılanmadığı kontrol edilerek tutulur.
+
+Backend, Docker Compose üzerinden PostgreSQL ile çalışacak şekilde kuruldu; bu karar geliştirme ortamının tüm takım üyeleri için tutarlı olmasını sağlamıştır.
+Frontend için React yerine HTML+Tailwind tercih edilmiştir; gerekçe, takım üyelerinin tamamında Node.js kurulu olmaması ve sprint süresinin kısıtlı olmasıdır.
+Agentic AI mimarisi (Orchestrator, Signal, Risk, Action) için Sprint 1'de yalnızca klasör iskeleti oluşturulmuş, implementasyon Sprint 2'ye bırakılmıştır.
+Çıkan ürünün (Swagger API, dashboard) çalışmasında bir problem görülmemiştir.
+
+*Sprint Retrospective'de alınan kararlar*
+
+Sprint Retrospective notları[ ProjectManagement/SprintXDocuments/Retrospective.md](https://github.com/beyzaarikan/returnshield-ai/blob/main/ProjectManagement/Sprint1Documents/Sprint1Documents/Retrospective.md) dosyasında tutulur.
+
+Data/ML tarafında çalışmanın notebook üzerinde ilerlerken düzenli aralıklarla GitHub'a push edilmesi gerektiği görülmüştür; bundan sonra her gün sonunda küçük commit'ler atılacaktır.
+Backend tarafında klasör yapısı (iç içe geçmiş dizinler) erken aşamada düzeltilmiş, bu tür yapısal sorunların sprint başında kontrol edilmesi kararlaştırılmıştır.
+Sprint 2'de agent entegrasyonu ve model bağlantısı için backend-data/ML arasındaki feature sırası/isimlendirme uyumunun önceden netleştirilmesi gerektiği görülmüştür.
+
+
+*Ürün Durumu: Ekran görüntüleri:
+<img width="1368" height="737" alt="productss1" src="https://github.com/user-attachments/assets/fc5007eb-d7f2-449a-a4d2-926013596e40" />
+<img width="474" height="410" alt="products2" src="https://github.com/user-attachments/assets/e55d998c-10a3-4756-bb28-4c36060086f1" />
+
+
+
+### Sprint 2
+
+ Agent mimarisi (Orchestrator/Signal/Risk/Action), ML model entegrasyonu, risk breakdown paneli, müşteri sepet ekranı
+
+
+### Sprint 3
+
+Final entegrasyon, demo senaryosu, sunum hazırlığı
+
 
 ### Gereksinimler
-
-- [Git](https://git-scm.com/downloads)
-- Kendi rolüne göre aşağıdaki araçlardan biri:
-
-| Rol | Gereken |
-|-----|---------|
-| Backend | Docker Desktop |
-| Frontend | Sadece tarayıcı yeterli |
-| Data/ML | Python 3.10+ ve Jupyter |
-
-### 1. Repo'yu clone'la
-
-```bash
-git clone https://github.com/[takım-adı]/returnshield-ai.git
-cd returnshield-ai
-```
-
-### 2. Kendi branch'ini aç
-
-```bash
-git checkout -b [kendi-ismin]/[görev-adı]
-# Örnek: git checkout -b ahmet/frontend-layout
-```
-
----
 
 ## Backend'i Çalıştırma 
 
@@ -57,16 +88,11 @@ Docker Desktop açıkken proje kökünde:
 
 ```bash
 docker compose up
-```
-
-Backend hazır olduğunda: `http://localhost:8000/docs`
+ `http://localhost:8000/docs`
 
 ---
 
 ## Frontend'i Çalıştırma
-
-Docker'a gerek yok. `frontend/` klasörüne gir, `index.html`'i tarayıcıda aç.
-
 Canlı önizleme için (opsiyonel):
 
 ```bash
@@ -76,16 +102,11 @@ python -m http.server 3000
 # Node varsa:
 npx serve .
 ```
-
 Sonra `http://localhost:3000` aç.
-
-API bağlantısı için backend'in çalışıyor olması lazım (`http://localhost:8000`). Backend çalışmıyorsa `js/api.js` otomatik olarak mock data'ya geçer, çalışmaya devam edersin.
 
 ---
 
 ## Data / ML Çalıştırma
-
-Docker'a gerek yok. `notebooks/` klasöründe çalışırsın.
 
 ```bash
 pip install pandas numpy matplotlib seaborn scikit-learn jupyter
@@ -150,34 +171,3 @@ Run the notebooks in this order:
 03_fit_signal_poc.ipynb
 ```
 
----
-
-## Branch & Pull Request Kuralları
-
-- Kimse direkt `main`'e push yapmaz
-- Herkes kendi branch'inde çalışır: `[isim]/[görev]`
-- Bitince GitHub'da Pull Request aç → base: `main`
-- Takım Üyesi merge eder
-
----
-
-## Scrum Board
-
-GitHub Projects Board linki 
-https://github.com/users/beyzaarikan/projects/2/views/1?layout=board
-
-Kolonlar: `Backlog → Sprint 1 → In Progress  → Done`
-
----
-
-## API Endpoints (Sprint 1)
-
-Base URL: `http://localhost:8000`
-
-| Method | Endpoint | Açıklama |
-|--------|----------|----------|
-| GET | `/api/orders` | Tüm siparişler |
-| GET | `/api/orders/{id}` | Tek sipariş |
-| GET | `/api/users` | Tüm kullanıcılar |
-
-Detaylı döküman: `backend/API_CONTRACT.md`
