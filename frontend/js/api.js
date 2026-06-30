@@ -2,26 +2,26 @@ const BASE_URL = 'http://localhost:8000';
 
 const MOCK_ORDERS = [
   { id: 1, customer: 'Ayşe K.', product: 'Oversize Sweatshirt M+L', order_hour: '23:14', risk_score: 0.85, risk_label: 'high', is_returned: true },
-  { id: 2, customer: 'Zeynep A.', product: 'Elbise S+M', order_hour: '01:32', risk_score: 0.78, risk_label: 'high', is_returned: true },
-  { id: 3, customer: 'Fatma B.', product: 'Slim Fit Pantolon', order_hour: '19:45', risk_score: 0.52, risk_label: 'mid', is_returned: false },
-  { id: 4, customer: 'Mehmet D.', product: 'Spor Ayakkabı', order_hour: '14:20', risk_score: 0.18, risk_label: 'low', is_returned: false },
-  { id: 5, customer: 'Ali S.', product: 'Kışlık Mont', order_hour: '11:05', risk_score: 0.12, risk_label: 'low', is_returned: false },
+  { id: 2, customer: 'Zeynep A.', product: 'Dress S+M', order_hour: '01:32', risk_score: 0.78, risk_label: 'high', is_returned: true },
+  { id: 3, customer: 'Fatma B.', product: 'Slim Fit Pant', order_hour: '19:45', risk_score: 0.52, risk_label: 'mid', is_returned: false },
+  { id: 4, customer: 'Mehmet D.', product: 'Sport Shoe', order_hour: '14:20', risk_score: 0.18, risk_label: 'low', is_returned: false },
+  { id: 5, customer: 'Ali S.', product: 'Winter Jacket', order_hour: '11:05', risk_score: 0.12, risk_label: 'low', is_returned: false },
 ];
 
 const MOCK_ALERTS = [
-  { level: 'high', name: 'Ayşe K. — gece + 2 beden', desc: 'Aynı ürünün M ve L bedeni sepette. Gece 23:14.' },
-  { level: 'high', name: 'Zeynep A. — tekrar iade', desc: 'Son 30 günde 4. iade. Gece 01:32 siparişi.' },
-  { level: 'mid', name: 'Fatma B. — yorum uyarısı', desc: '"Kalıbı dar" şikayeti olan üründen sipariş.' },
-  { level: 'mid', name: 'Can T. — fiyat anomalisi', desc: 'Yüksek fiyatlı üründe ilk kez sipariş.' },
+  { level: 'high', name: 'Ayşe K. — night + 2 sizes', desc: 'There are two items of the same product in the cart, one in size M and one in size L. Order placed at 23:14.' },
+  { level: 'high', name: 'Zeynep A. — repeat return', desc: 'There have been 4 returns in the last 30 days. Order placed at 01:32.' },
+  { level: 'mid', name: 'Fatma B. — review warning', desc: 'Order for a product with a review stating it runs small.' },
+  { level: 'mid', name: 'Can T. — price anomaly', desc: 'First-time order for a high-priced item.' },
 ];
 
 async function getOrders() {
   try {
     const res = await fetch(`${BASE_URL}/api/orders`);
-    if (!res.ok) throw new Error('API hazır değil');
+    if (!res.ok) throw new Error('API not ready');
     return await res.json();
   } catch {
-    console.warn('API bağlanamadı, mock data kullanılıyor.');
+    console.warn('API connection failed, using mock data.');
     return MOCK_ORDERS;
   }
 }
@@ -89,3 +89,31 @@ document.addEventListener('DOMContentLoaded', () => {
   renderOrdersTable();
   renderAlerts();
 });
+
+
+async function analyzeCart(orderId) {
+  try {
+    const res = await fetch(`${BASE_URL}/api/agent/analyze-cart`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        user_id: 1,
+        cart_items: [
+          { product_id: "DEMO", size: "M", price: 349, hour: 23, review_summary: "runs small" }
+        ]
+      })
+    });
+    if (!res.ok) throw new Error('Agent API not ready');
+    return await res.json();
+  } catch {
+    console.warn('Agent API connection failed, using mock result.');
+    return {
+      risk_score: 0.84,
+      risk_level: "high",
+      agents_used: ["SignalAgent", "RiskAgent", "ActionAgent"],
+      reasons: ["High size mismatch signal in reviews", "Same product added in two sizes", "Order placed at night"],
+      customer_message: "This item runs small for some customers. Would you like to check the size guide?",
+      merchant_action: "Add fit information to the product description."
+    };
+  }
+}

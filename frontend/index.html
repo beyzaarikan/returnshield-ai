@@ -15,73 +15,73 @@
       <div class="logo-text">ReturnShield</div>
     </div>
     <a href="index.html" class="nav-item active"><i class="ti ti-layout-dashboard"></i> Dashboard</a>
-    <a href="#" class="nav-item"><i class="ti ti-shopping-cart"></i> Siparişler</a>
-    <a href="#" class="nav-item"><i class="ti ti-users"></i> Müşteriler</a>
-    <a href="#" class="nav-item"><i class="ti ti-chart-bar"></i> Analitik</a>
-    <a href="#" class="nav-item"><i class="ti ti-settings"></i> Ayarlar</a>
+    <a href="#" class="nav-item"><i class="ti ti-shopping-cart"></i> Orders</a>
+    <a href="#" class="nav-item"><i class="ti ti-users"></i> Customers</a>
+    <a href="#" class="nav-item"><i class="ti ti-chart-bar"></i> Analytics</a>
+    <a href="#" class="nav-item"><i class="ti ti-settings"></i> Settings</a>
     <div class="nav-spacer"></div>
-    <a href="#" class="nav-item"><i class="ti ti-logout"></i> Çıkış</a>
+    <a href="#" class="nav-item"><i class="ti ti-logout"></i> Logout</a>
   </div>
   <div class="main">
     <div class="topbar">
       <div class="page-title">Dashboard</div>
-      <div class="search"><i class="ti ti-search"></i> Sipariş ara...</div>
+      <div class="search"><i class="ti ti-search"></i> Order search...</div>
     </div>
     <div class="content">
       <div class="stat-row">
         <div class="stat-card">
           <div class="stat-icon ic-yellow"><i class="ti ti-alert-triangle"></i></div>
-          <div class="stat-label">Yüksek Riskli</div>
+          <div class="stat-label">High Risk</div>
           <div class="stat-val" id="stat-high">—</div>
-          <div class="stat-sub">Bu hafta</div>
+          <div class="stat-sub">This week</div>
         </div>
         <div class="stat-card">
           <div class="stat-icon ic-purple"><i class="ti ti-package"></i></div>
-          <div class="stat-label">Toplam Sipariş</div>
+          <div class="stat-label">Total Orders</div>
           <div class="stat-val" id="stat-total">—</div>
-          <div class="stat-sub">Bu ay</div>
+          <div class="stat-sub">This month</div>
         </div>
         <div class="stat-card">
           <div class="stat-icon ic-red"><i class="ti ti-arrow-back"></i></div>
-          <div class="stat-label">İade Oranı</div>
+          <div class="stat-label">Return Rate</div>
           <div class="stat-val" id="stat-return">—</div>
-          <div class="stat-sub">Geçen ay ile kıyasla</div>
+          <div class="stat-sub">Compared to last month</div>
         </div>
         <div class="stat-card">
           <div class="stat-icon ic-green"><i class="ti ti-leaf"></i></div>
-          <div class="stat-label">CO₂ Tasarrufu</div>
+          <div class="stat-label">CO₂ Savings</div>
           <div class="stat-val">340kg</div>
-          <div class="stat-sub">Bu ay (tahmini)</div>
+          <div class="stat-sub">This month (estimated)</div>
         </div>
       </div>
       <div class="bottom-row">
         <div class="card">
           <div class="card-header">
             <div>
-              <div class="card-title">Son Siparişler</div>
-              <div class="card-sub">Yüksek riskli olanlar önce sıralanır</div>
+              <div class="card-title">Latest Orders</div>
+              <div class="card-sub">High-risk orders are prioritized</div>
             </div>
           </div>
           <table>
             <thead>
               <tr>
-                <th>Müşteri</th>
-                <th>Ürün</th>
-                <th>Saat</th>
-                <th>Risk Skoru</th>
-                <th>Durum</th>
+                <th>Customer</th>
+                <th>Product</th>
+                <th>Hour</th>
+                <th>Risk Score</th>
+                <th>Status</th>
               </tr>
             </thead>
             <tbody id="orders-table-body">
-              <tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:20px">Yükleniyor...</td></tr>
+              <tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:20px">Loading...</td></tr>
             </tbody>
           </table>
         </div>
         <div class="card">
           <div class="card-header">
             <div>
-              <div class="card-title">AI Uyarıları</div>
-              <div class="card-sub">Anlık tespit edilen riskler</div>
+              <div class="card-title">AI Alerts</div>
+              <div class="card-sub">Real-time detected risks</div>
             </div>
           </div>
           <div id="alerts-list"></div>
