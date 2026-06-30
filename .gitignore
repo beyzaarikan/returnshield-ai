@@ -4,3 +4,9 @@ __pycache__/
 venv/
 .venv/
 postgres_data/
+data/raw/
+data/processed/
+outputs/
+*.csv
+*.json
+.ipynb_checkpoints/
