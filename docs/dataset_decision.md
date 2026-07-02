@@ -1,39 +1,50 @@
-# Dataset Decision Draft
+# Dataset Decision
 
 ## Document Status
 
-This document summarizes the Sprint 1 dataset decisions for ReturnShield AI.
+This document summarizes the current dataset decisions for the ReturnShield AI MVP.
 
-It separates implemented data layers from planned data layers. The current project pipeline has implemented the Online Retail and Clothing Fit layers. The standalone review signal layer and mock cart feature layer are still planned Sprint 1 completion tasks.
+Status: **updated after the implementation of notebooks 01-06**
 
-This document should be updated after the review signal and mock cart notebooks are implemented.
+The previous draft separated implemented layers from planned Sprint 1 layers. That is no longer accurate. The following layers are now implemented in the notebook pipeline:
+
+- Online Retail transaction and return/cancel proxy layer
+- Baseline transaction risk-ranking model
+- ModCloth + RentTheRunway fit signal layer
+- Review text and rating signal layer
+- Mock cart feature layer
+- ReturnShield Risk Agent demo output layer
+
+The current implementation uses a layered data strategy. The datasets are not row-level merged because they do not share the same users, products, sessions, carts, or order IDs.
 
 ---
 
 ## 1. Purpose
 
-ReturnShield AI is an explainable MVP prototype for identifying possible return-risk signals before checkout in an e-commerce context.
+ReturnShield AI is an explainable MVP prototype for identifying possible return-risk signals before checkout in a fashion e-commerce context.
 
-The project does not claim that a single public dataset can fully represent a real production fashion return-prevention system. Instead, the project uses a layered data approach:
+The project does not claim that a single public dataset can fully represent a real production fashion return-prevention system. Instead, it uses a layered data approach:
 
 - transaction and return/cancel proxy signals,
-- fashion fit and size mismatch signals,
-- review-based quality, size, and color issue signals,
-- simulated cart behavior signals.
+- fashion fit, size, length, and quality signals,
+- review-based size, quality, color, rating, and negative-language signals,
+- controlled mock cart behavior signals,
+- a Risk Agent output layer that produces risk score, risk level, reasons, and suggested actions.
 
-Each data source is used for a specific signal layer. The datasets are not row-level merged because they do not contain the same users, products, sessions, carts, or order IDs.
+Each data source is used for a specific signal layer. The final demo combines these layers into a controlled MVP cart-level schema.
 
 ---
 
 ## 2. Current Implementation Status
 
-| Layer | Dataset / Source | Current Status | Project Usage |
+| Layer | Dataset / Source | Current status | Project usage |
 |---|---|---:|---|
 | Transaction and return/cancel proxy | UCI Online Retail | Implemented | Main transaction feature layer and proxy label source |
-| Baseline risk modeling | UCI Online Retail derived features | Implemented | First baseline risk ranking / model score |
-| Fashion fit and size signals | ModCloth + RentTheRunway Clothing Fit Dataset | Implemented | Item-level fit, length, quality, and review keyword signals |
-| Standalone review signal layer | Review dataset or review text layer | Planned | Quality, color, size, and sentiment signals |
-| Mock cart behavior | Simulated demo data | Planned | Pre-checkout uncertainty and cart behavior features |
+| Baseline risk modeling | UCI Online Retail derived features | Implemented | First baseline risk ranking / transaction model score |
+| Fashion fit and size signals | ModCloth + RentTheRunway Clothing Fit Dataset | Implemented | Item-level fit, length, and quality signals |
+| Review signal layer | ModCloth + RentTheRunway review text and rating fields | Implemented | Size, quality, color, negative-language, and rating issue signals |
+| Mock cart behavior | Controlled simulated demo carts | Implemented | Pre-checkout uncertainty and cart behavior features |
+| Risk Agent output | Combined cart-level features | Implemented | Risk score, risk level, reasons, suggested action, and dashboard message |
 
 ---
 
@@ -44,10 +55,11 @@ The project will not force a single dataset to cover all return-risk factors.
 The current decision is:
 
 1. Use UCI Online Retail as the main transaction and return/cancel proxy label dataset.
-2. Use ModCloth + RentTheRunway Clothing Fit Dataset for fashion fit, size, length, and quality mismatch signals.
-3. Add a review signal layer only as an auxiliary signal source. This layer is planned and should not be described as completed until the notebook is implemented.
+2. Use ModCloth + RentTheRunway Clothing Fit Dataset for fashion fit, size, length, quality, review text, and rating signals.
+3. Use review text already available in the clothing fit datasets instead of introducing a separate unrelated review dataset.
 4. Use mock cart simulation for pre-checkout cart behavior because the selected open datasets do not contain real cart-level pre-checkout behavior.
 5. Do not perform row-level merging between unrelated datasets.
+6. Treat the final `risk_score` as an MVP risk-ranking and decision-support score, not as a calibrated production return probability.
 
 ---
 
@@ -62,7 +74,8 @@ In ReturnShield, this dataset is used for:
 - transaction data preparation,
 - return/cancel proxy label creation,
 - transaction-level feature engineering,
-- baseline return/cancel risk modeling.
+- baseline return/cancel risk modeling,
+- label-backed risk-ranking input for the Risk Agent.
 
 ### 4.2 Why This Dataset Is Used
 
@@ -74,10 +87,12 @@ This makes it suitable for building a transaction-level risk layer.
 
 The current project uses a proxy label, not a perfect real-world return label.
 
-The label logic is:
+The label logic is based on return/cancellation-like transaction behavior available in the dataset, such as cancellation invoice patterns and negative quantity records.
+
+Example logic:
 
 ```text
-if InvoiceNo starts with "C" or Quantity < 0:
+if InvoiceNo indicates cancellation or Quantity < 0:
     is_return = 1
 else:
     is_return = 0
@@ -100,17 +115,20 @@ notebooks/01_online_retail_data_preparation.ipynb
 notebooks/02_online_retail_baseline_modeling.ipynb
 ```
 
-Expected local outputs:
+Local pipeline outputs:
 
 ```text
 data/processed/online_retail_eda_features.csv
 data/processed/online_retail_model_base.csv
-outputs/online_retail_modeling_metrics.csv
-outputs/online_retail_top_k_lift.csv
-outputs/online_retail_test_scores.csv
+data/processed/online_retail_test_scores.csv
 ```
 
-Generated outputs are not tracked by Git.
+Tracked output artifacts:
+
+```text
+outputs/01_online_retail_data_preparation/
+outputs/02_online_retail_baseline_modeling/
+```
 
 ---
 
@@ -118,13 +136,13 @@ Generated outputs are not tracked by Git.
 
 ### 5.1 Dataset Role
 
-The Clothing Fit layer is used to generate fashion-specific fit and size mismatch signals.
+The Clothing Fit layer is used to generate fashion-specific fit, length, quality, review, and rating signals.
 
 It is not used as the main return label source.
 
 ### 5.2 Why This Dataset Is Used
 
-ReturnShield needs fashion-specific risk signals that cannot be derived from UCI Online Retail. The Clothing Fit dataset provides fit-related feedback from fashion platforms.
+ReturnShield needs fashion-specific risk signals that cannot be derived from UCI Online Retail. The Clothing Fit datasets provide user feedback from fashion platforms.
 
 This layer supports signals such as:
 
@@ -132,11 +150,15 @@ This layer supports signals such as:
 - too small / too large tendency,
 - length issue,
 - quality issue,
-- review keyword signals when review text is available.
+- review text size issue,
+- review text quality issue,
+- review text color issue,
+- negative-language signal,
+- rating issue signal.
 
 ### 5.3 Current Signal Logic
 
-Example logic:
+Example fit logic:
 
 ```text
 if fit is "small" or "large":
@@ -146,20 +168,36 @@ if fit is "fit":
     fit_issue = 0
 ```
 
-Item-level signals are then generated from row-level feedback.
+Example review logic:
+
+```text
+review text -> keyword-based issue counts -> item-level smoothed issue scores
+```
+
+The current MVP uses interpretable signal extraction rather than a large black-box NLP model.
 
 ### 5.4 Current Notebook Usage
 
-Implemented notebook:
+Implemented notebooks:
 
 ```text
 notebooks/03_fit_signal_poc.ipynb
+notebooks/04_review_signal_poc.ipynb
 ```
 
-Expected local output:
+Local pipeline outputs:
 
 ```text
 data/processed/fit_signals.csv
+data/processed/review_signals.csv
+data/processed/review_signal_handoff.csv
+```
+
+Tracked output artifacts:
+
+```text
+outputs/03_fit_signal_poc/
+outputs/04_review_signal_poc/
 ```
 
 ### 5.5 Important Limitation
@@ -172,153 +210,213 @@ The output is used as an item-level auxiliary signal layer, not as a row-level e
 
 ---
 
-## 6. Planned Layer: Standalone Review Signal PoC
+## 6. Implemented Layer: Review Signal PoC
 
 ### 6.1 Current Status
 
-This layer is planned but not yet fully implemented as a separate notebook.
+The review signal layer is now implemented.
 
-A separate notebook is expected:
+Implemented notebook:
 
 ```text
 notebooks/04_review_signal_poc.ipynb
 ```
 
-Expected local output:
+Local pipeline outputs:
 
 ```text
 data/processed/review_signals.csv
+data/processed/review_signal_handoff.csv
+```
+
+Tracked diagnostic output:
+
+```text
+outputs/04_review_signal_poc/review_signal_diagnostics.csv
 ```
 
 ### 6.2 Purpose
 
-The review layer will extract text-based risk signals related to:
+The review layer extracts text-based risk signals related to:
 
 - size issues,
 - quality issues,
 - color issues,
-- general sentiment.
+- negative language,
+- rating-based dissatisfaction.
 
-### 6.3 Candidate Signal Logic
+### 6.3 Current Signal Fields
 
-The first Sprint 1 version can be keyword-based. It does not need to be a production-level NLP model.
-
-Example keyword groups:
-
-```text
-Size issue keywords:
-small, tight, too small, large, too big, size up, size down
-
-Quality issue keywords:
-cheap, thin, poor quality, bad fabric, ripped, low quality
-
-Color issue keywords:
-different color, not as pictured, color is different, faded
-```
-
-Possible output fields:
+Important output fields include:
 
 ```text
-product_id
-review_count
-avg_rating
-review_size_signal_rate
-quality_issue_score
-color_issue_score
-sentiment_score
-review_signal_reliability
+review_text_size_issue_score
+review_text_quality_issue_score
+review_text_color_issue_score
+review_text_negative_language_score
+rating_issue_score
+review_text_reliability_weight
+rating_signal_reliability_weight
+top_review_text_issue
+review_text_color_issue_score_upper_tail_flag
 ```
 
 ### 6.4 Important Limitation
 
-Until this notebook is implemented, the review layer should be described as planned, not completed.
+The review layer is an MVP signal extraction layer. It should not be presented as a production-grade sentiment analysis or LLM-based review understanding system.
 
-The project should not claim that a standalone review dataset has already been fully integrated.
+The current implementation is interpretable and suitable for prototype explanation, but it does not prove causal return reduction.
 
 ---
 
-## 7. Planned Layer: Mock Cart Features
+## 7. Implemented Layer: Mock Cart Features
 
 ### 7.1 Current Status
 
-This layer is planned but not yet implemented.
+The mock cart feature layer is now implemented.
 
-A separate notebook is expected:
+Implemented notebook:
 
 ```text
 notebooks/05_mock_cart_features.ipynb
 ```
 
-Expected local output:
+Local pipeline outputs:
 
 ```text
 data/processed/mock_cart_features.csv
+data/processed/mock_cart_items.csv
+```
+
+Tracked output artifacts:
+
+```text
+outputs/05_mock_cart_features/mock_cart_feature_diagnostics.csv
+outputs/05_mock_cart_features/mock_cart_simulation_config.csv
+outputs/05_mock_cart_features/mock_product_signal_map.csv
 ```
 
 ### 7.2 Purpose
 
-The mock cart layer will create a demo input table for the Risk Agent and dashboard.
+The mock cart layer creates a cart-level demo input table for the Risk Agent and dashboard.
 
-The selected public datasets do not contain real pre-checkout cart behavior. Therefore, cart behavior will be simulated for MVP demonstration purposes.
+The selected public datasets do not contain real pre-checkout cart behavior. Therefore, cart behavior is simulated for MVP demonstration purposes.
 
-### 7.3 Planned Simulated Fields
+### 7.3 Simulated Fields
 
-Example simulated fields:
+Implemented simulated/demo fields include:
 
 ```text
 cart_id
 mock_user_id
-mock_product_id
+primary_mock_product_id
+primary_source_item_id
+cart_item_count
+unique_mock_product_count
 two_size_same_product
 duplicate_variant
-cart_item_count
-cart_uncertainty_score
-```
-
-Example logic:
-
-```text
-if the same product appears in two different sizes in the cart:
-    two_size_same_product = 1
-    cart_uncertainty_score increases
+cart_uncertainty_signal_count
+cart_size_pressure
 ```
 
 ### 7.4 Combined Risk Agent Input
 
-The mock cart feature table will combine signal layers into a common schema for demonstration.
+The mock cart feature table combines transaction, fit, review, and cart behavior layers into a common schema.
 
-Example fields:
+Important final input fields include:
 
 ```text
-cart_id
-mock_user_id
-mock_product_id
-unit_price
+model_risk_rank_score
+model_risk_score_raw
 night_purchase
-customer_return_rate
-product_return_rate
-model_risk_score
+fit_layer_summary_score
 item_fit_issue_score
 item_length_issue_score
 item_quality_issue_score
-review_size_signal_rate
-quality_issue_score
-color_issue_score
-two_size_same_product
-duplicate_variant
-cart_uncertainty_score
-risk_score
-risk_level
-top_reasons
+review_text_summary_score
+review_text_size_issue_score
+review_text_quality_issue_score
+review_text_color_issue_score
+review_text_negative_language_score
+rating_issue_score
+fit_signal_available
+review_signal_available
+rating_signal_available
 ```
 
 ### 7.5 Important Limitation
 
-Mock cart rows are simulated demo records. They should be clearly marked as simulated in the data dictionary.
+Mock cart rows are simulated demo records. They should be clearly marked as simulated in the data dictionary and should not be presented as real production cart traffic.
+
+Notebook 05 creates Risk Agent input features only. It does not create the final `risk_score`, `risk_level`, or final action output. Those are produced in Notebook 06.
 
 ---
 
-## 8. Why Row-Level Merging Is Not Used
+## 8. Implemented Layer: Risk Agent Demo Output
+
+### 8.1 Current Status
+
+The Risk Agent demo layer is implemented.
+
+Implemented notebook:
+
+```text
+notebooks/06_returnshield_agent_demo.ipynb
+```
+
+Tracked output artifacts:
+
+```text
+outputs/06_returnshield_agent_demo/returnshield_agent_cart_scores.csv
+outputs/06_returnshield_agent_demo/returnshield_agent_config.csv
+outputs/06_returnshield_agent_demo/returnshield_agent_diagnostics.csv
+outputs/06_returnshield_agent_demo/returnshield_agent_summary.csv
+```
+
+### 8.2 Purpose
+
+This layer converts the cart-level input table into an explainable demo output for backend/frontend use.
+
+It produces:
+
+```text
+risk_score
+risk_percentile_rank
+risk_level
+label_backed_risk_score
+contextual_evidence_score
+top_reasons
+reason_details
+suggested_action
+dashboard_message
+```
+
+### 8.3 Current Risk Scoring Design
+
+The final score is transaction-anchored and context-aware.
+
+Risk score policy:
+
+| Component | Weight | Rationale |
+|---|---:|---|
+| Transaction anchor | 0.70 | The transaction model is the only label-backed risk layer. |
+| Contextual evidence | 0.30 | Fit, review, and cart signals adjust and explain the risk. |
+
+Contextual evidence policy:
+
+| Component | Weight | Rationale |
+|---|---:|---|
+| Fit context | 0.45 | Size and fit issues are central to fashion returns. |
+| Review context | 0.40 | Review text provides product-specific issue evidence. |
+| Cart context | 0.15 | Cart behavior is useful but simulated in the MVP. |
+
+### 8.4 Important Limitation
+
+The final `risk_score` is not a calibrated probability of return. It is a risk-ranking and decision-support score for the MVP demo.
+
+---
+
+## 9. Why Row-Level Merging Is Not Used
 
 The datasets do not share common identifiers.
 
@@ -327,8 +425,9 @@ There is no reliable key connecting:
 - a UCI Online Retail customer,
 - a ModCloth user,
 - a RentTheRunway user,
-- a review dataset user,
-- a simulated cart user.
+- a fashion review item,
+- a simulated cart user,
+- a real cart or session.
 
 Therefore, row-level merging would create artificial and misleading relationships.
 
@@ -336,18 +435,18 @@ ReturnShield uses the following layered approach:
 
 ```text
 UCI Online Retail -> transaction and return/cancel proxy signal
-Clothing Fit Dataset -> fit and size mismatch signal
-Review layer -> text-based issue signal
+Clothing Fit Dataset -> fit, size, length, quality, review, and rating signals
 Mock cart simulation -> pre-checkout cart uncertainty signal
+Risk Agent demo -> risk score, reasons, suggested actions, and dashboard message
 ```
 
 These layers are mapped into a shared feature schema for the MVP demo, but the project does not claim that they come from the same real users or orders.
 
 ---
 
-## 9. Data Status Definitions
+## 10. Data Status Definitions
 
-The project should label each field using one of the following statuses:
+The project labels each field using one of the following statuses:
 
 | Status | Meaning |
 |---|---|
@@ -356,49 +455,55 @@ The project should label each field using one of the following statuses:
 | simulated | Created for controlled MVP demonstration |
 | model_output | Produced by a model or scoring function |
 | agent_output | Produced by an agent layer |
+| diagnostic | Produced for evaluation, audit, or explanation |
 
 Examples:
 
 | Field | Status | Explanation |
 |---|---|---|
-| InvoiceNo | real | Directly available in UCI Online Retail |
-| is_return | derived | Created from InvoiceNo and Quantity |
-| customer_return_rate | derived | Computed from transaction history |
-| model_risk_score | model_output | Produced by baseline modeling |
-| item_fit_issue_score | derived | Aggregated from Clothing Fit feedback |
-| two_size_same_product | simulated | Created in mock cart simulation |
-| risk_level | agent_output / model_output | Produced by the risk scoring layer |
+| `InvoiceNo` | real | Directly available in UCI Online Retail |
+| `is_return` | derived | Created from invoice/quantity logic |
+| `selected_model_score` | model_output | Produced by baseline modeling |
+| `model_risk_rank_score` | model_output / derived | Percentile/rank version of model score |
+| `item_fit_issue_score` | derived | Aggregated from Clothing Fit feedback |
+| `review_text_size_issue_score` | derived | Extracted from review text |
+| `two_size_same_product` | simulated | Created in mock cart simulation |
+| `risk_score` | agent_output | Produced in Notebook 06 |
+| `risk_level` | agent_output | Produced in Notebook 06 |
+| `suggested_action` | agent_output | Produced in Notebook 06 |
+| `dashboard_message` | agent_output | Produced in Notebook 06 |
 
 ---
 
-## 10. Raw Data and Generated Output Policy
+## 11. Raw Data and Generated Output Policy
 
 Raw datasets are not committed to Git.
 
-Generated outputs are also not committed to Git.
+Processed local pipeline tables are not committed to Git.
 
-The repository keeps only:
+Tracked repository artifacts include:
 
 - source code,
 - notebooks,
 - documentation,
-- configuration files.
+- selected output plots,
+- selected output metrics,
+- selected diagnostics and summaries under `outputs/`.
 
-The following folders are excluded through `.gitignore`:
+The following folders remain excluded through `.gitignore`:
 
 ```text
 data/raw/
 data/processed/
-outputs/
 ```
 
-This keeps the repository small and avoids treating generated files as source files.
+The `outputs/` folder is tracked because it contains lightweight notebook artifacts used as evidence for review, demo, and team handoff.
 
 ---
 
-## 11. Out of Scope for Sprint 1
+## 12. Out of Scope for the Current MVP
 
-The following items are out of scope for Sprint 1:
+The following items are out of scope for the current MVP:
 
 - image-based product analysis,
 - DeepFashion2,
@@ -407,28 +512,31 @@ The following items are out of scope for Sprint 1:
 - real payment system integration,
 - real company integration,
 - real customer personal data,
-- production-level return reduction proof.
+- production-level return reduction proof,
+- calibrated production return probability,
+- true row-level matching between UCI transactions and fashion review products.
 
-These can be mentioned as future improvements, but they should not be presented as implemented Sprint 1 functionality.
+These can be mentioned as future improvements, but they should not be presented as implemented functionality.
 
 ---
 
-## 12. Key Limitations
+## 13. Key Limitations
 
 The current MVP has the following limitations:
 
 1. UCI Online Retail is not a fashion-specific dataset.
 2. The return/cancel label is a proxy, not a perfect real-world return label.
-3. Clothing Fit data is used for auxiliary fit signals, not for direct return labels.
-4. The standalone review layer is still planned.
+3. Clothing Fit data is used for auxiliary fashion signals, not for direct return labels.
+4. Review signals are extracted from available fashion review text and rating fields, not from a separate production review system.
 5. Mock cart behavior is simulated.
 6. The datasets are not row-level merged.
-7. The model score should be interpreted as a risk ranking signal, not a definitive return probability.
+7. The model score should be interpreted as a risk-ranking signal, not a definitive return probability.
 8. The project does not claim to prove real return reduction.
+9. The Risk Agent output is a controlled decision-support output, not an autonomous purchase decision.
 
 ---
 
-## 13. References
+## 14. References
 
 - UCI Machine Learning Repository: Online Retail Dataset  
   https://archive.ics.uci.edu/dataset/352/online+retail
@@ -438,18 +546,32 @@ The current MVP has the following limitations:
 
 ---
 
-## 14. Summary
+## 15. Summary
 
 ReturnShield AI uses a layered data strategy because no single public dataset covers all required signals for pre-checkout return-risk analysis.
 
-The current implemented layers provide:
+The current implemented pipeline provides:
 
 - transaction-based return/cancel proxy features,
-- baseline risk scoring,
-- fashion fit and quality-related item signals.
+- baseline transaction risk scoring,
+- fashion fit, length, quality, review, and rating signals,
+- controlled mock cart behavior features,
+- a common Risk Agent input table,
+- final Risk Agent outputs for backend/frontend handoff.
 
-The planned Sprint 1 completion layers will add:
+The main handoff output is:
 
-- standalone review-based issue signals,
-- mock cart behavior features,
-- a common Risk Agent input table.
+```text
+outputs/06_returnshield_agent_demo/returnshield_agent_cart_scores.csv
+```
+
+This output provides one row per demo cart with:
+
+```text
+risk_score
+risk_level
+top_reasons
+reason_details
+suggested_action
+dashboard_message
+```
