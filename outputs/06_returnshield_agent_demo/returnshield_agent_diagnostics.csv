@@ -1,0 +1,10 @@
+signal,correlation_with_risk_score,note
+label_backed_risk_score,0.8787235173465731,correlation diagnostic only; not used for scoring
+transaction_layer_score,0.8787235173465731,correlation diagnostic only; not used for scoring
+contextual_evidence_score,0.7226201368323757,correlation diagnostic only; not used for scoring
+fit_context_evidence_score,0.5869343460088743,correlation diagnostic only; not used for scoring
+review_context_evidence_score,0.5250194959246707,correlation diagnostic only; not used for scoring
+review_layer_agent_score,0.49317537103721215,correlation diagnostic only; not used for scoring
+cart_context_evidence_score,0.48656999781547733,correlation diagnostic only; not used for scoring
+fit_layer_agent_score,0.4257567598520283,correlation diagnostic only; not used for scoring
+cart_behavior_agent_score,0.39874931267460095,correlation diagnostic only; not used for scoring

@@ -1,0 +1,7 @@
+policy_group,name,value,reason
+risk_score,transaction_anchor_weight,0.7,label-backed return/cancel ranking remains the risk anchor
+risk_score,contextual_evidence_weight,0.3,"fit, review, and cart evidence can adjust the risk score but do not replace the label-backed anchor"
+reason_threshold,reason_quantile,0.75,upper-tail signals are used for explanations and contextual evidence
+contextual_evidence,fit_context_weight,0.45,context signal weight used inside contextual evidence score
+contextual_evidence,review_context_weight,0.4,context signal weight used inside contextual evidence score
+contextual_evidence,cart_context_weight,0.15,context signal weight used inside contextual evidence score

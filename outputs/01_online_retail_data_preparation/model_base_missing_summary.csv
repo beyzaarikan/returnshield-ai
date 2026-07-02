@@ -1,0 +1,13 @@
+column,missing_count,missing_rate
+CustomerID,131691,0.24536988731218698
+InvoiceDate,0,0.0
+StockCode,0,0.0
+Description,0,0.0
+Country,0,0.0
+log_unit_price,0,0.0
+invoice_hour,0,0.0
+invoice_dayofweek,0,0.0
+invoice_month,0,0.0
+evening_purchase,0,0.0
+customer_history_available,0,0.0
+is_return,0,0.0
