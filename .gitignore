@@ -1,0 +1,17 @@
+.env
+__pycache__/
+*.pyc
+venv/
+.venv/
+
+# Data and generated outputs
+data/raw/
+data/processed/
+
+*.csv
+!outputs/**/*.csv
+*.json
+
+# Jupyter
+.ipynb_checkpoints/
+notebooks/.ipynb_checkpoints/

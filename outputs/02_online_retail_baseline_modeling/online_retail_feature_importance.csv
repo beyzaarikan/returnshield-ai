@@ -1,0 +1,50 @@
+feature,importance
+numeric__customer_return_cancel_rate_train,0.3764268581919417
+numeric__product_return_cancel_rate_train,0.27360184373613633
+numeric__customer_history_count_train,0.10564118836846702
+numeric__customer_history_available,0.06309357518621811
+numeric__log_unit_price,0.04026888380457367
+numeric__product_history_count_train,0.0387278983694971
+numeric__invoice_hour,0.03277065433423437
+numeric__invoice_dayofweek,0.03084644315293383
+numeric__invoice_month,0.020519109451654735
+numeric__evening_purchase,0.006026602699798228
+categorical__Country_EIRE,0.003578505872620424
+categorical__Country_Germany,0.0033089070584284524
+numeric__customer_history_reliable_train,0.002504929124423804
+categorical__Country_United Kingdom,0.001583202284864204
+categorical__Country_Australia,0.0008174939051499148
+numeric__product_history_reliable_train,0.0002491159378051296
+categorical__Country_France,2.814023244776227e-05
+categorical__Country_Spain,6.648288805218791e-06
+categorical__Country_Poland,0.0
+categorical__Country_Malta,0.0
+categorical__Country_Netherlands,0.0
+categorical__Country_Norway,0.0
+categorical__Country_Lithuania,0.0
+categorical__Country_Switzerland,0.0
+categorical__Country_Portugal,0.0
+categorical__Country_Saudi Arabia,0.0
+categorical__Country_Singapore,0.0
+categorical__Country_Sweden,0.0
+categorical__Country_Japan,0.0
+categorical__Country_USA,0.0
+categorical__Country_United Arab Emirates,0.0
+categorical__Country_Lebanon,0.0
+categorical__Country_Finland,0.0
+categorical__Country_Italy,0.0
+categorical__Country_Israel,0.0
+categorical__Country_Iceland,0.0
+categorical__Country_Hong Kong,0.0
+categorical__Country_Greece,0.0
+categorical__Country_European Community,0.0
+categorical__Country_Denmark,0.0
+categorical__Country_Czech Republic,0.0
+categorical__Country_Cyprus,0.0
+categorical__Country_Channel Islands,0.0
+categorical__Country_Canada,0.0
+categorical__Country_Brazil,0.0
+categorical__Country_Belgium,0.0
+categorical__Country_Bahrain,0.0
+categorical__Country_Austria,0.0
+categorical__Country_Unspecified,0.0

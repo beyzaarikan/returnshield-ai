@@ -1,0 +1,9 @@
+column,dtype,missing_count,missing_rate,unique_count
+InvoiceNo,object,0,0.0,25900
+StockCode,object,0,0.0,4070
+Description,object,1454,0.002683107311375157,4223
+Quantity,int64,0,0.0,722
+InvoiceDate,object,0,0.0,23260
+UnitPrice,float64,0,0.0,1630
+CustomerID,float64,135080,0.249266943342886,4372
+Country,object,0,0.0,38
