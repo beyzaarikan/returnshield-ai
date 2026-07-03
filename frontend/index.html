@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,25 +9,28 @@
 </head>
 <body>
 <div class="shell">
+
   <div class="sidebar">
     <div class="logo">
       <div class="logo-icon">↩</div>
       <div class="logo-text">ReturnShield</div>
     </div>
     <a href="index.html" class="nav-item active"><i class="ti ti-layout-dashboard"></i> Dashboard</a>
-    <a href="#" class="nav-item"><i class="ti ti-shopping-cart"></i> Orders</a>
-    <a href="#" class="nav-item"><i class="ti ti-users"></i> Customers</a>
-    <a href="#" class="nav-item"><i class="ti ti-chart-bar"></i> Analytics</a>
+    <a href="cart.html" class="nav-item"><i class="ti ti-shopping-cart"></i> Cart </a>
     <a href="#" class="nav-item"><i class="ti ti-settings"></i> Settings</a>
     <div class="nav-spacer"></div>
     <a href="#" class="nav-item"><i class="ti ti-logout"></i> Logout</a>
+    
   </div>
+
   <div class="main">
     <div class="topbar">
       <div class="page-title">Dashboard</div>
       <div class="search"><i class="ti ti-search"></i> Order search...</div>
     </div>
+
     <div class="content">
+
       <div class="stat-row">
         <div class="stat-card">
           <div class="stat-icon ic-yellow"><i class="ti ti-alert-triangle"></i></div>
@@ -50,10 +53,11 @@
         <div class="stat-card">
           <div class="stat-icon ic-green"><i class="ti ti-leaf"></i></div>
           <div class="stat-label">CO₂ Savings</div>
-          <div class="stat-val">340kg</div>
-          <div class="stat-sub">This month (estimated)</div>
+          <div class="stat-val" id="co2-value">—</div>
+          <div class="stat-sub" id="returns-prevented-text">Calculating...</div>
         </div>
       </div>
+
       <div class="bottom-row">
         <div class="card">
           <div class="card-header">
@@ -77,6 +81,7 @@
             </tbody>
           </table>
         </div>
+
         <div class="card">
           <div class="card-header">
             <div>
@@ -87,9 +92,22 @@
           <div id="alerts-list"></div>
         </div>
       </div>
+
     </div>
   </div>
 </div>
+
+<!-- Risk Detail Modal -->
+<div class="detail-overlay" id="detail-overlay">
+  <div class="detail-panel">
+    <div class="detail-header">
+      <div class="detail-title">Risk Analysis</div>
+      <button class="detail-close" onclick="closeDetail()">✕</button>
+    </div>
+    <div id="detail-content"></div>
+  </div>
+</div>
+
 <script src="js/api.js"></script>
 </body>
 </html>
