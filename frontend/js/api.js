@@ -65,8 +65,8 @@ async function renderOrdersTable() {
       <td>${o.customer_name || o.customer || '—'}</td>
       <td>${o.product || o.product_name || '—'}</td>
       <td>${o.order_hour !== undefined ? o.order_hour + ':00' : '—'}</td>
-      <td>${riskBar(o.risk_score, o.risk_label)}</td>
-      <td>${riskBadge(o.risk_label)}</td>
+      <td><span style="font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:4px">🔍 Click to analyze</span></td>
+      
     </tr>
   `).join('');
 
