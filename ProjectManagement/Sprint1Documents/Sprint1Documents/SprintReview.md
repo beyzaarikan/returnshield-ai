@@ -1,4 +1,4 @@
-# Sprint 1 Review — ReturnShield AI
+# Sprint 2 Review — ReturnShield AI
 
 ## Tamamlanan Görevler
 
