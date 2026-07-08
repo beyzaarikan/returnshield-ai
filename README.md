@@ -66,7 +66,7 @@ Sprint 2'de agent entegrasyonu ve model bağlantısı için backend-data/ML aras
 <img width="474" height="410" alt="products2" src="https://github.com/user-attachments/assets/e55d998c-10a3-4756-bb28-4c36060086f1" />
 
 
-### Sprint 2
+# Sprint 2
 
 GitHub Projects board'unda kartlar Backlog → Sprint 1 → to-do → In Progress  → Done kolonlarında takip edilmektedir. Her kart bir görevi temsil eder ve ilgili kişiye atanmıştır.
 
@@ -104,7 +104,7 @@ AI Alerts'teki cart_id isimleri daha okunabilir hale getirilecek
 <img width="386" height="371" alt="image" src="https://github.com/user-attachments/assets/6786b3c8-afe2-4e92-ad0d-6a00b5aa544a" />
 
 
-### Sprint 3
+# Sprint 3
 
 Final entegrasyon, demo senaryosu, sunum hazırlığı yapılacak
 
