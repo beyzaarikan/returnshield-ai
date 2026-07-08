@@ -41,7 +41,6 @@ https://github.com/users/beyzaarikan/projects/2/views/1?layout=board
 <img width="1289" height="818" alt="image" src="https://github.com/user-attachments/assets/7c5cfa49-11d6-4a27-8c77-a3f4eb24eaa2" />
 
 
-
 ## *Daily Scrum*
 Daily Scrum toplantıları zamansal sebeplerden ötürü WhatsApp üzerinden yazılı olarak yapılmaktadır. Notlar [ProjectManagement/SprintXDocuments/DailyScrumNotes.md](https://github.com/beyzaarikan/returnshield-ai/blob/main/ProjectManagement/Sprint1Documents/Sprint1Documents/DailyScrumNotes.md) dosyasında tutulur.
 
@@ -69,7 +68,40 @@ Sprint 2'de agent entegrasyonu ve model bağlantısı için backend-data/ML aras
 
 ### Sprint 2
 
- Agent mimarisi (Orchestrator/Signal/Risk/Action), ML model entegrasyonu, risk breakdown paneli, müşteri sepet ekranı yapılacak
+GitHub Projects board'unda kartlar Backlog → Sprint 1 → to-do → In Progress  → Done kolonlarında takip edilmektedir. Her kart bir görevi temsil eder ve ilgili kişiye atanmıştır.
+
+https://github.com/users/beyzaarikan/projects/2/views/1?layout=board
+
+<img width="1656" height="803" alt="Ekran görüntüsü 2026-07-08 203613" src="https://github.com/user-attachments/assets/a7f87e79-7e30-4711-90e9-add1dbd68943" />
+<img width="1546" height="833" alt="Ekran görüntüsü 2026-07-08 203636" src="https://github.com/user-attachments/assets/c9125298-327e-4a03-8e46-bde60e9c74ae" />
+<img width="1474" height="844" alt="Ekran görüntüsü 2026-07-08 203711" src="https://github.com/user-attachments/assets/ca0f21e0-788b-4135-8a94-0f95b63a85a2" />
+
+## *Daily Scrum*
+Daily Scrum toplantıları zamansal sebeplerden ötürü WhatsApp üzerinden yazılı olarak yapılmaktadır. Notlar https://github.com/beyzaarikan/returnshield-ai/blob/main/ProjectManagement/Sprint1Documents/Sprint2Documents/DailyScrumNotes.md dosyasında tutulur.
+
+## *Sprint 2 Review'da alınan kararlar:*
+
+Her sprint sonunda tamamlanan görevler ve çalışan ürün ekran görüntüleri ile birlikte gözden geçirilir. Sprint Review notları https://github.com/beyzaarikan/returnshield-ai/blob/main/ProjectManagement/Sprint1Documents/Sprint2Documents/SprintReview.md dosyasında, acceptance criteria'ların karşılanıp karşılanmadığı kontrol edilerek tutulur.
+
+ /api/predict ve /api/agent/analyze-cart endpoint'leri çalışıyor
+ ML modeli veya risk motoru API'den çağrılıyor, response şeması frontend ile uyumlu
+ Risk nedenleri ve AI mesajı ekranda gösteriliyor
+ Precision/Recall/F1 raporu, model dosyası ve açıklanabilirlik grafiği hazır (outputs/ klasöründe)
+ analyze-cart response içinde agents_used, reasons, customer_message, merchant_action dönüyor
+
+## *Sprint Retrospective'de alınan kararlar*
+
+Sprint Retrospective notları https://github.com/beyzaarikan/returnshield-ai/blob/main/ProjectManagement/Sprint1Documents/Sprint2Documents/Retrospective.md dosyasında tutulur.
+
+Sprint 3'te demo akışı baştan sona prova edilecek — video çekiminden önce tüm ekip aynı anda test edecek
+README kurulum adımları Sprint 3'te netleştirilecek — tek komutla çalışır hale getirilecek
+AI Alerts'teki cart_id isimleri daha okunabilir hale getirilecek
+
+*Ürün Durumu: Ekran görüntüleri:
+
+<img width="1600" height="763" alt="image" src="https://github.com/user-attachments/assets/f23f1820-d342-43a5-a8fe-879dac9d9a0d" />
+<img width="489" height="724" alt="image" src="https://github.com/user-attachments/assets/d97f116e-46e2-4de4-a33d-f575e69feee2" />
+<img width="386" height="371" alt="image" src="https://github.com/user-attachments/assets/6786b3c8-afe2-4e92-ad0d-6a00b5aa544a" />
 
 
 ### Sprint 3
