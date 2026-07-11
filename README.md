@@ -84,7 +84,7 @@ Daily Scrum toplantıları zamansal sebeplerden ötürü WhatsApp üzerinden yaz
 
 ## *Sprint 2 Review'da alınan kararlar:*
 
-Her sprint sonunda tamamlanan görevler ve çalışan ürün ekran görüntüleri ile birlikte gözden geçirilir. Sprint Review notları https://github.com/beyzaarikan/returnshield-ai/blob/main/ProjectManagement/Sprint1Documents/Sprint2Documents/SprintReview.md dosyasında, acceptance criteria'ların karşılanıp karşılanmadığı kontrol edilerek tutulur.
+Her sprint sonunda tamamlanan görevler ve çalışan ürün ekran görüntüleri ile birlikte gözden geçirilir. Sprint Review notları acceptance criteria'ların karşılanıp karşılanmadığı kontrol edilerek tutulur.
 
 ## Tamamlanan Görevler
 
