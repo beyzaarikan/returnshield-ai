@@ -32,8 +32,7 @@ Moda/tekstil/ayakkabı kategorisinde satış yapan e-ticaret işletmeleri ve bu 
 # Sprint 1
 
 *Backlog Düzeni ve Story Seçimleri*
-Backlog, ilk yapılacak görevlere göre önceliklendirilmiştir. Her sprint için tahmin edilen puan sınırını aşmayacak şekilde sıradan seçimler yapılmaktadır. Görevler backend, frontend ve data/ML olmak üzere üç ana sorumluluk alanına bölünmüş, her alan kendi içinde bağımsız çalışabilecek şekilde tasarlanmıştır.
-
+Bu proje local ortamda çalışmaktadır. Scrum board olarak GitHub Projects kullanılmıştır ancak GitHub Projects linkleri harici kullanıcılara açık olmadığından link paylaşımı mümkün olmamaktadır.
 GitHub Projects board'unda kartlar Backlog → Sprint 1 → In Progress  → Done kolonlarında takip edilmektedir. Her kart bir görevi temsil eder ve ilgili kişiye atanmıştır.
 
  ### Sprint Board Update Screenshots
@@ -68,7 +67,7 @@ Sprint 2'de agent entegrasyonu ve model bağlantısı için backend-data/ML aras
 
 # Sprint 2
 
-GitHub Projects board'unda kartlar Backlog → Sprint 1 → to-do → In Progress  → Done kolonlarında takip edilmektedir. Her kart bir görevi temsil eder ve ilgili kişiye atanmıştır.
+GitHub Projects board'unda kartlar Backlog → Sprint 2 → to-do → In Progress  → Done kolonlarında takip edilmektedir. Her kart bir görevi temsil eder ve ilgili kişiye atanmıştır.
 
  ### Sprint Board Update Screenshots
  
