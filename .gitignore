@@ -3,4 +3,15 @@ __pycache__/
 *.pyc
 venv/
 .venv/
-postgres_data/
+
+# Data and generated outputs
+data/raw/
+data/processed/
+
+*.csv
+!outputs/**/*.csv
+*.json
+
+# Jupyter
+.ipynb_checkpoints/
+notebooks/.ipynb_checkpoints/

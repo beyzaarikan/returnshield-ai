@@ -1,0 +1,2 @@
+random_seed,n_carts,min_items_per_cart,max_items_per_cart,two_size_cart_probability,duplicate_variant_probability,size_options
+42,50,1,4,0.28,0.18,"XS,S,M,L,XL"

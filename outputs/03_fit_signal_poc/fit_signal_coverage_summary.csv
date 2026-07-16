@@ -1,0 +1,10 @@
+metric,value
+items,7228.0
+rows,275334.0
+items_with_fit_signal,7228.0
+items_with_review_text,7174.0
+fit_alpha_used,38.09269507470946
+fit_single_observation_reliability_weight,0.025580226640524912
+mean_item_fit_issue_score,0.28135251610507594
+median_item_fit_issue_score,0.27473589851832164
+review_signal_available,1.0

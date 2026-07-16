@@ -1,0 +1,8 @@
+metric,value
+cart_count,50.0
+mean_risk_score,0.679727031172958
+median_risk_score,0.7049694114209536
+mean_contextual_evidence_score,0.515
+high_risk_cart_count,13.0
+medium_risk_cart_count,18.0
+low_risk_cart_count,19.0

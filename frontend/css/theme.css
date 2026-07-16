@@ -1,4 +1,5 @@
 :root {
+  /* Primary colors */
   --primary: #FFC029;
   --primary-light: #FFF3D0;
   --accent: #5F27CD;
@@ -7,19 +8,29 @@
   --danger-light: #FFE4E4;
   --success: #22C55E;
   --success-light: #DCFCE7;
+
+  /* Risk badge colors */
   --risk-high-bg: #FFE4E4;
   --risk-high-text: #C0392B;
   --risk-mid-bg: #FFF3D0;
   --risk-mid-text: #B7860A;
   --risk-low-bg: #EDE9FB;
   --risk-low-text: #5F27CD;
+
+  /* Text */
   --text: #000000;
   --text-muted: #7B7878;
+
+  /* Surfaces */
   --bg-page: #EEEEEE;
   --bg-card: #FFFFFF;
   --border: #EDEDED;
+
+  /* Dimensions */
   --sidebar-width: 200px;
   --radius: 12px;
   --radius-sm: 8px;
+
+  /* Font */
   --font: 'Roboto', sans-serif;
 }

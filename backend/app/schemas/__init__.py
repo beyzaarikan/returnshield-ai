@@ -10,6 +10,7 @@ class OrderOut(BaseModel):
     order_hour: int
     is_returned: bool
     created_at: datetime
+    customer_name: str | None = None
 
     class Config:
         from_attributes = True
