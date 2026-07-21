@@ -11,10 +11,10 @@ class OrchestratorAgent:
         self.risk_agent = RiskAgent(model=risk_model)
         self.action_agent = ActionAgent()
 
-    def analyze(self, cart_items: list, user_id: int) -> dict:
+    def analyze(self, cart_items: list, user_id: int, cart_id: str = None) -> dict:
         signals = self.signal_agent.extract(cart_items, user_id)
         risk_result = self.risk_agent.score(signals)
-        action_result = self.action_agent.recommend(risk_result)
+        action_result = self.action_agent.recommend(risk_result, cart_id=cart_id)
 
         return {
             "risk_score": risk_result["risk_score"],
