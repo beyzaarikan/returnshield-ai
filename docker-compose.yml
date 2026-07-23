@@ -21,6 +21,9 @@ services:
     restart: always
     ports:
       - "8000:8000"
+    env_file:
+      - path: ./backend/.env
+        required: false
     environment:
       DATABASE_URL: ${DATABASE_URL:-postgresql://returnshield:returnshield123@db:5432/returnshield}
       DEBUG: ${DEBUG:-true}

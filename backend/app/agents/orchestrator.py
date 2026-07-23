@@ -24,4 +24,6 @@ class OrchestratorAgent:
             "reasons": risk_result["top_factors"],
             "customer_message": action_result["customer_message"],
             "merchant_action": action_result["merchant_action"],
+            "message_source": action_result["message_source"],
+            "llm_used": action_result["llm_used"],
         }

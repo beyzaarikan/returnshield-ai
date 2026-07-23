@@ -107,6 +107,8 @@ def test_analyze_cart_live_mode_uses_request_items(monkeypatch):
                 "reasons": ["two_size_same_product"],
                 "customer_message": "Show size guidance.",
                 "merchant_action": "show_size_guidance_before_checkout",
+                "message_source": "template",
+                "llm_used": False,
             }
 
     def override_db():
@@ -136,6 +138,8 @@ def test_analyze_cart_live_mode_uses_request_items(monkeypatch):
     assert body["analysis_mode"] == "live_rules"
     assert body["data_source"] == "database_and_request"
     assert body["input_items_used"] is True
+    assert body["message_source"] == "template"
+    assert body["llm_used"] is False
     assert body["prediction_id"] == 101
 
 
@@ -153,6 +157,8 @@ def test_analyze_cart_demo_mode_uses_precomputed_score(monkeypatch):
         "reason_details": [],
         "customer_message": "Show size and fit guidance.",
         "merchant_action": "show_size_guidance_before_checkout",
+        "message_source": "precomputed_agent_output",
+        "llm_used": False,
     }
 
     def override_db():
@@ -177,4 +183,6 @@ def test_analyze_cart_demo_mode_uses_precomputed_score(monkeypatch):
     assert body["analysis_mode"] == "demo_csv"
     assert body["scoring_mode"] == "precomputed_agent_output"
     assert body["input_items_used"] is False
+    assert body["message_source"] == "precomputed_agent_output"
+    assert body["llm_used"] is False
     assert body["prediction_id"] == 102

@@ -104,6 +104,8 @@ def _persist_prediction(db: Session, result: dict, cart_id: str | None):
             "reasons": result.get("reasons", []),
             "customer_message": result.get("customer_message"),
             "merchant_action": result.get("merchant_action"),
+            "message_source": result.get("message_source"),
+            "llm_used": result.get("llm_used", False),
         }),
     )
     db.add(prediction)

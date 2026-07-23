@@ -46,4 +46,6 @@ def get_cart_score(cart_id: str):
         "reason_details": reason_details,
         "customer_message": str(r["dashboard_message"]) if pd.notna(r["dashboard_message"]) else None,
         "merchant_action": str(r["suggested_action"]) if pd.notna(r["suggested_action"]) else None,
+        "message_source": "precomputed_agent_output",
+        "llm_used": False,
     }
