@@ -20,7 +20,8 @@ ReturnShield AI, moda e-ticaretinde satın alma öncesi iade riskini tespit eden
 ## Ürün Özellikleri
 Sepet analizi: aynı üründen birden fazla beden, gece alışverişi gibi davranışsal sinyaller
 Yorum analizinden beden/renk/kalite şikayeti tespiti
-ML destekli risk skoru (XGBoost/Random Forest)
+Offline model-derived risk ranking (Random Forest/Logistic Regression) ve açıklanabilir rules baseline
+İsteğe bağlı Gemini destekli müşteri mesajı; API key veya quota yoksa template fallback
 Agentic AI mimarisi: Orchestrator, Signal, Risk, Action agent'ları
 Müşteri ekranında yumuşak, manipülatif olmayan uyarı mesajı
 İşletme dashboard'unda riskli sipariş listesi ve aksiyon önerileri
@@ -143,13 +144,13 @@ Handoff raporu hazırlandı
 ## Acceptance Criteria Kontrolü
 + /api/predict ve /api/agent/analyze-cart endpoint'leri çalışıyor
   
-+ ML modeli veya risk motoru API'den çağrılıyor, response şeması frontend ile uyumlu
++ Runtime API'de rules baseline risk motoru çağrılıyor; demo cart'larda precomputed agent output kullanılıyor ve response şeması frontend ile uyumlu
   
 + Risk nedenleri ve AI mesajı ekranda gösteriliyor
   
-+ Precision/Recall/F1 raporu, model dosyası ve açıklanabilirlik grafiği hazır (outputs/ klasöründe)
++ Precision/Recall/F1 raporları ve açıklanabilirlik grafikleri outputs/ klasöründe hazır; runtime model artifact'ı projeye dahil değildir
   
-+ analyze-cart response içinde agents_used, reasons, customer_message, merchant_action dönüyor
++ analyze-cart response içinde agents_used, reasons, customer_message, merchant_action, message_source ve llm_used dönüyor
 
 
 ## *Sprint Retrospective'de alınan kararlar*
@@ -171,7 +172,7 @@ pandas requirements.txt'te eksikti, Docker rebuild gerekti
 
 CSV entegrasyonunda path problemi yaşandı (Docker volume mount gerekti)
 
-Data/ML tarafında pkl export yapılmadı, bunun yerine hazır agent demo çıktısı kullanıldı
+Data/ML tarafında pkl/joblib export yapılmadı; notebook model skorları offline pipeline üzerinden agent demo CSV çıktısına aktarıldı
 
 AI Alerts başlangıçta statik mock'tu, dinamik hale getirilmesi ek iş gerektirdi
 
@@ -206,7 +207,7 @@ cart.html müşteri tarafını başarıyla simüle ediyor
 
 Handoff raporu ve 5 docs dosyası hazırlandı — veri şeffaflığı sağlandı
 
-pkl export yapılmadı ama returnshield_agent_cart_scores.csv aynı işi görüyor, demo etkilenmedi
+pkl/joblib export yapılmadı. returnshield_agent_cart_scores.csv yalnızca offline demo çıktısıdır; runtime model artifact'ı yerine geçmez. Demo akışı precomputed skorlarla çalışır.
 
 
 Sprint 3'te demo akışı baştan sona prova edilecek — video çekiminden önce tüm ekip aynı anda test edecek
@@ -233,22 +234,21 @@ Final entegrasyon, demo senaryosu, sunum hazırlığı yapılacak
 Docker Desktop açıkken proje kökünde:
 
 ```bash
-docker compose up
- `http://localhost:8000/docs`
+docker compose up --build -d
+```
+
+Backend Swagger dokümantasyonu:
+
+`http://localhost:8000/docs`
+
+Gemini mesaj üretimini etkinleştirmek istersen `backend/.env` dosyasına geçerli bir `GEMINI_API_KEY` ekleyebilirsin. Key veya quota yoksa sistem template mesajıyla çalışmaya devam eder.
 
 ---
 
 ## Frontend'i Çalıştırma
-Canlı önizleme için (opsiyonel):
+Frontend Docker Compose içindeki Nginx servisi üzerinden çalışır:
 
-```bash
-# Python varsa:
-python -m http.server 3000
-
-# Node varsa:
-npx serve .
-```
-Sonra `http://localhost:3000` aç.
+`http://localhost:3000`
 
 ---
 
