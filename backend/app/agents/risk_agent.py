@@ -42,6 +42,7 @@ class RiskAgent:
         return {
             "risk_score": round(score, 2),
             "risk_level": level,
+            "scoring_mode": "rules_baseline",
             "top_factors": reasons,
         }
 
@@ -54,5 +55,6 @@ class RiskAgent:
         return {
             "risk_score": round(float(proba), 2),
             "risk_level": level,
+            "scoring_mode": "ml_model",
             "top_factors": [],
         }

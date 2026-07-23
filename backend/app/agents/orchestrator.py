@@ -19,6 +19,7 @@ class OrchestratorAgent:
         return {
             "risk_score": risk_result["risk_score"],
             "risk_level": risk_result["risk_level"],
+            "scoring_mode": risk_result["scoring_mode"],
             "agents_used": ["SignalAgent", "RiskAgent", "ActionAgent"],
             "reasons": risk_result["top_factors"],
             "customer_message": action_result["customer_message"],

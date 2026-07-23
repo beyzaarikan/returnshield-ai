@@ -37,6 +37,7 @@ def get_cart_score(cart_id: str):
         "cart_id": cart_id,
         "analysis_mode": "demo_csv",
         "data_source": "agent_output_csv",
+        "scoring_mode": "precomputed_agent_output",
         "score_type": "ranking_score_not_calibrated_probability",
         "risk_score": round(float(r["risk_score"]), 2),
         "risk_level": str(r["risk_level"]),
