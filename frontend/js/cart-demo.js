@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:8000';
+const BASE_URL = window.RETURNSHIELD_CONFIG.apiBaseUrl;
 
 const CART_DEMOS = {
   CART_0001: {

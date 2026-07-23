@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:8000';
+const BASE_URL = window.RETURNSHIELD_CONFIG.apiBaseUrl;
 
 const MOCK_ORDERS = [
   { id: 1, customer: 'Alice J.', product: 'Oversized Sweatshirt M+L', order_hour: '23:14', risk_score: 0.85, risk_label: 'high', is_returned: true },

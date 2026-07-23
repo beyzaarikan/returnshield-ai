@@ -24,6 +24,7 @@ services:
     environment:
       DATABASE_URL: ${DATABASE_URL:-postgresql://returnshield:returnshield123@db:5432/returnshield}
       DEBUG: ${DEBUG:-true}
+      FRONTEND_ORIGINS: ${FRONTEND_ORIGINS:-http://localhost:3000}
     depends_on:
       db:
         condition: service_healthy

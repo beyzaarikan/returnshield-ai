@@ -3,12 +3,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 from app.routes import orders, users, agent, predict, summary
 from app.database import engine
+from app.config import settings
 
 app = FastAPI(title="ReturnShield AI", version="0.1.0")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[origin.strip() for origin in settings.FRONTEND_ORIGINS.split(",") if origin.strip()],
     allow_methods=["*"],
     allow_headers=["*"],
 )
