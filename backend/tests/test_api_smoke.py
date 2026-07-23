@@ -2,7 +2,9 @@ import asyncio
 
 import httpx
 
+from app.database import get_db
 from app.main import app
+from app.routes import agent as agent_routes
 
 
 def request(method, url, **kwargs):
@@ -86,3 +88,93 @@ def test_read_only_agent_history_endpoints_return_lists():
     assert predictions_response.status_code == 200
     assert isinstance(logs_response.json(), list)
     assert isinstance(predictions_response.json(), list)
+
+
+def test_analyze_cart_live_mode_uses_request_items(monkeypatch):
+    class FakeOrchestrator:
+        def __init__(self, db):
+            self.db = db
+
+        def analyze(self, cart_items, user_id, cart_id=None):
+            assert cart_items[0]["product_id"] == "P1"
+            assert user_id == 1
+            assert cart_id == "LIVE_TEST"
+            return {
+                "risk_score": 0.7,
+                "risk_level": "high",
+                "scoring_mode": "rules_baseline",
+                "agents_used": ["SignalAgent", "RiskAgent", "ActionAgent"],
+                "reasons": ["two_size_same_product"],
+                "customer_message": "Show size guidance.",
+                "merchant_action": "show_size_guidance_before_checkout",
+            }
+
+    def override_db():
+        yield object()
+
+    monkeypatch.setattr(agent_routes, "get_cart_score", lambda cart_id: None)
+    monkeypatch.setattr(agent_routes, "OrchestratorAgent", FakeOrchestrator)
+    monkeypatch.setattr(agent_routes, "_persist_prediction", lambda db, result, cart_id: 101)
+    monkeypatch.setattr(agent_routes, "add_log", lambda db, entry: None)
+    app.dependency_overrides[get_db] = override_db
+
+    try:
+        response = request(
+            "POST",
+            "/api/agent/analyze-cart",
+            json={
+                "user_id": 1,
+                "cart_id": "LIVE_TEST",
+                "cart_items": [{"product_id": "P1", "size": "M", "price": 349, "hour": 23}],
+            },
+        )
+    finally:
+        app.dependency_overrides.clear()
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["analysis_mode"] == "live_rules"
+    assert body["data_source"] == "database_and_request"
+    assert body["input_items_used"] is True
+    assert body["prediction_id"] == 101
+
+
+def test_analyze_cart_demo_mode_uses_precomputed_score(monkeypatch):
+    demo_result = {
+        "cart_id": "CART_TEST",
+        "analysis_mode": "demo_csv",
+        "data_source": "agent_output_csv",
+        "scoring_mode": "precomputed_agent_output",
+        "score_type": "ranking_score_not_calibrated_probability",
+        "risk_score": 0.87,
+        "risk_level": "high",
+        "agents_used": ["SignalAgent", "RiskAgent", "ActionAgent"],
+        "reasons": ["high_transaction_model_rank"],
+        "reason_details": [],
+        "customer_message": "Show size and fit guidance.",
+        "merchant_action": "show_size_guidance_before_checkout",
+    }
+
+    def override_db():
+        yield object()
+
+    monkeypatch.setattr(agent_routes, "get_cart_score", lambda cart_id: demo_result.copy())
+    monkeypatch.setattr(agent_routes, "_persist_prediction", lambda db, result, cart_id: 102)
+    monkeypatch.setattr(agent_routes, "add_log", lambda db, entry: None)
+    app.dependency_overrides[get_db] = override_db
+
+    try:
+        response = request(
+            "POST",
+            "/api/agent/analyze-cart",
+            json={"user_id": 1, "cart_id": "CART_TEST", "cart_items": []},
+        )
+    finally:
+        app.dependency_overrides.clear()
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["analysis_mode"] == "demo_csv"
+    assert body["scoring_mode"] == "precomputed_agent_output"
+    assert body["input_items_used"] is False
+    assert body["prediction_id"] == 102
