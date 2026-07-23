@@ -17,14 +17,23 @@ services:
     ports:
       - "8000:8000"
     environment:
-      DATABASE_URL: postgresql://returnshield:returnshield123@db:5432/returnshield
+      DATABASE_URL: ${DATABASE_URL:-postgresql://returnshield:returnshield123@db:5432/returnshield}
+      DEBUG: ${DEBUG:-true}
     depends_on:
       - db
     volumes:
       - ./backend:/app
       - ./outputs:/outputs
-    env_file:
-      - ./backend/.env
+
+  frontend:
+    image: nginx:alpine
+    restart: always
+    ports:
+      - "3000:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html:ro
+    depends_on:
+      - backend
 
 volumes:
   postgres_data:
