@@ -2,9 +2,11 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from app.database import get_db
+from app.models import ReturnPrediction
 from app.agents.orchestrator import OrchestratorAgent
 from app.services.cart_scores import get_cart_score
 from app.services.memory import add_log, get_logs
+import json
 
 router = APIRouter()
 
@@ -28,14 +30,18 @@ def analyze_cart(payload: AnalyzeCartRequest, db: Session = Depends(get_db)):
         result = get_cart_score(payload.cart_id)
         if result:
             result["input_items_used"] = False
-            add_log({
+            _persist_prediction(db, result, payload.cart_id)
+            add_log(db, {
                 "cart_id": payload.cart_id,
                 "user_id": payload.user_id,
                 "risk_score": result["risk_score"],
                 "risk_level": result["risk_level"],
+                "analysis_mode": result["analysis_mode"],
+                "data_source": result["data_source"],
                 "agents_used": result["agents_used"],
                 "reasons": result["reasons"],
                 "customer_message": result["customer_message"],
+                "merchant_action": result["merchant_action"],
             })
             return result
 
@@ -49,20 +55,40 @@ def analyze_cart(payload: AnalyzeCartRequest, db: Session = Depends(get_db)):
         "score_type": "rule_score_not_calibrated_probability",
         "input_items_used": True,
     })
-    add_log({
+    _persist_prediction(db, result, payload.cart_id)
+    add_log(db, {
         "cart_id": payload.cart_id or "live",
         "user_id": payload.user_id,
         "risk_score": result["risk_score"],
         "risk_level": result["risk_level"],
+        "analysis_mode": result["analysis_mode"],
+        "data_source": result["data_source"],
         "agents_used": result["agents_used"],
         "reasons": result["reasons"],
         "customer_message": result["customer_message"],
+        "merchant_action": result["merchant_action"],
     })
     return result
 
 @router.get("/logs")
-def get_agent_logs():
-    return get_logs()
+def get_agent_logs(db: Session = Depends(get_db)):
+    return get_logs(db)
+
+def _persist_prediction(db: Session, result: dict, cart_id: str | None):
+    prediction = ReturnPrediction(
+        cart_id=cart_id,
+        risk_score=result["risk_score"],
+        risk_label=result["risk_level"],
+        analysis_mode=result.get("analysis_mode"),
+        score_type=result.get("score_type"),
+        explanation=json.dumps({
+            "reasons": result.get("reasons", []),
+            "customer_message": result.get("customer_message"),
+            "merchant_action": result.get("merchant_action"),
+        }),
+    )
+    db.add(prediction)
+    db.commit()
 
 @router.get("/top-alerts")
 def top_alerts():
