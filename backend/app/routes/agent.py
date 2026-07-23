@@ -59,7 +59,7 @@ def analyze_cart(payload: AnalyzeCartRequest, db: Session = Depends(get_db)):
 
     # CSV'de yoksa kural tabanlı devam et
     orchestrator = OrchestratorAgent(db)
-    cart_items = [item.dict() for item in payload.cart_items]
+    cart_items = [item.model_dump() for item in payload.cart_items]
     result = orchestrator.analyze(cart_items, payload.user_id, cart_id=payload.cart_id)
     result.update({
         "analysis_mode": "live_rules",

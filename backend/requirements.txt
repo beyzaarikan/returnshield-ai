@@ -8,3 +8,4 @@ pydantic-settings
 pandas
 google-genai
 pytest
+httpx
