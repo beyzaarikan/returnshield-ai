@@ -5,44 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Cart — ReturnShield Demo</title>
   <link rel="stylesheet" href="css/theme.css">
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: var(--font, 'Roboto', sans-serif); background: var(--bg-page); padding: 40px 16px; min-height: 100vh; }
-    .store-header { max-width: 480px; margin: 0 auto 20px; display: flex; align-items: center; gap: 10px; }
-    .store-logo { width: 32px; height: 32px; background: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
-    .store-name { font-size: 15px; font-weight: 700; color: var(--text); }
-    .store-sub { font-size: 11px; color: var(--text-muted); }
-    .cart-container { max-width: 480px; margin: 0 auto; background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border); padding: 24px; }
-    .cart-title { font-size: 18px; font-weight: 700; margin-bottom: 16px; }
-    .cart-item { display: flex; justify-content: space-between; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid var(--border); }
-    .cart-item:last-of-type { border-bottom: none; }
-    .cart-item-info { display: flex; flex-direction: column; gap: 3px; }
-    .cart-item-name { font-size: 14px; font-weight: 500; color: var(--text); }
-    .cart-item-meta { font-size: 12px; color: var(--text-muted); }
-    .cart-item-price { font-size: 14px; font-weight: 500; color: var(--text); }
-    .cart-total { display: flex; justify-content: space-between; padding: 14px 0 0; font-size: 14px; font-weight: 700; border-top: 2px solid var(--border); margin-top: 8px; }
-    .cart-warning { margin-top: 16px; padding: 14px; background: var(--primary-light); border-left: 3px solid var(--primary); border-radius: 8px; font-size: 13px; display: none; line-height: 1.5; }
-    .cart-warning.show { display: block; }
-    .cart-warning-title { font-weight: 600; margin-bottom: 4px; font-size: 13px; }
-    #review-summary-box { background: var(--accent-light); border-left-color: var(--accent); margin-top: 10px; }
-    #alt-size-box { background: var(--success-light); border-left-color: var(--success); margin-top: 10px; }
-    .risk-indicator { display: none; margin-top: 14px; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border); font-size: 12px; align-items: center; gap: 10px; }
-    .risk-indicator.show { display: flex; }
-    .risk-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-    .risk-dot.high { background: var(--danger); }
-    .risk-dot.medium { background: var(--primary); }
-    .risk-dot.low { background: var(--success); }
-    .risk-label { font-weight: 600; }
-    .risk-score-num { color: var(--text-muted); margin-left: auto; }
-    .return-history { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-muted); margin-bottom: 12px; padding: 6px 10px; background: var(--danger-light); border-radius: 6px; }
-    .cart-actions { margin-top: 16px; display: flex; gap: 8px; flex-wrap: wrap; }
-    .cart-btn { flex: 1; min-width: 120px; padding: 10px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); font-size: 12px; cursor: pointer; font-family: var(--font, 'Roboto', sans-serif); transition: background 0.15s; color: var(--text); }
-    .cart-btn:hover { background: var(--bg-page); }
-    .cart-btn.primary { background: var(--primary); border-color: var(--primary); font-weight: 600; color: #000; }
-    .back-link { display: block; text-align: center; margin-top: 16px; font-size: 12px; color: var(--text-muted); text-decoration: none; }
-    .back-link:hover { color: var(--text); }
-  </style>
+  <link rel="stylesheet" href="css/cart-demo.css">
 </head>
 <body data-cart-id="CART_0036">
   <div class="store-header">
