@@ -10,9 +10,14 @@ class SignalAgent:
     def extract(self, cart_items: list, user_id: int) -> dict:
         signals = {}
 
-        # Cart behavior: same product, different size
-        product_ids = [item["product_id"] for item in cart_items]
-        signals["two_size_same_product"] = len(product_ids) != len(set(product_ids))
+        # Cart behavior: same product selected in distinct sizes.
+        sizes_by_product = {}
+        for item in cart_items:
+            sizes_by_product.setdefault(item["product_id"], set()).add(item.get("size"))
+        signals["two_size_same_product"] = any(
+            len(sizes) > 1 and None not in sizes
+            for sizes in sizes_by_product.values()
+        )
 
         # Night purchase
         hour = cart_items[0].get("hour", 12) if cart_items else 12

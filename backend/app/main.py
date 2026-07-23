@@ -1,12 +1,15 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import text
 from app.routes import orders, users, agent, predict, summary
+from app.database import engine
+from app.config import settings
 
 app = FastAPI(title="ReturnShield AI", version="0.1.0")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[origin.strip() for origin in settings.FRONTEND_ORIGINS.split(",") if origin.strip()],
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -20,3 +23,13 @@ app.include_router(summary.router, prefix="/api/dashboard/summary", tags=["dashb
 @app.get("/")
 def root():
     return {"status": "ok", "app": "ReturnShield AI"}
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
+@app.get("/ready")
+def ready():
+    with engine.connect() as connection:
+        connection.execute(text("SELECT 1"))
+    return {"status": "ready"}

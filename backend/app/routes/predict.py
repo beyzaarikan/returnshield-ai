@@ -14,4 +14,4 @@ class PredictRequest(BaseModel):
 @router.post("/")
 def predict(payload: PredictRequest):
     agent = RiskAgent()
-    return agent.score(payload.dict())
+    return agent.score(payload.model_dump())

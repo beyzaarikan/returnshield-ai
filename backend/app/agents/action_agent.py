@@ -1,12 +1,12 @@
-import os
 from google import genai
+from app.config import settings
 
 class ActionAgent:
     """Generates a customer message and a merchant action based on the risk result."""
 
     CUSTOMER_TEMPLATES = {
         "high": "Fit-related signals are elevated for this item. We recommend checking the size guide and recent reviews before completing your purchase.",
-        "mid": "Some customers have shared feedback about the fit of this item. Taking a moment to review the size guide may help you make the right choice.",
+        "medium": "Some customers have shared feedback about the fit of this item. Taking a moment to review the size guide may help you make the right choice.",
         "low": None,
     }
 
@@ -19,33 +19,53 @@ class ActionAgent:
 
     MERCHANT_TEMPLATES = {
         "high": "Add fit information to the product description and highlight the size guide.",
-        "mid": "Make the review summary more visible on the product page.",
+        "medium": "Make the review summary more visible on the product page.",
         "low": "No action needed.",
     }
 
     def __init__(self):
-        api_key = os.environ.get("GEMINI_API_KEY", "")
+        api_key = settings.GEMINI_API_KEY.strip()
         self.use_llm = bool(api_key)
+        self.client = None
         if self.use_llm:
-            self.client = genai.Client(api_key=api_key)
+            try:
+                self.client = genai.Client(api_key=api_key)
+            except Exception as e:
+                print(f"Gemini client initialization error: {e}")
+                self.use_llm = False
 
     def recommend(self, risk_result: dict, cart_id: str = None) -> dict:
         level = risk_result["risk_level"]
         reasons = risk_result.get("top_factors", [])
 
-        if self.use_llm and level in ("high", "mid", "medium") and reasons:
+        message_source = "template"
+        llm_used = False
+
+        if self.use_llm and level in ("high", "medium") and reasons:
             customer_message = self._generate_llm_message(level, reasons)
-        elif cart_id and cart_id in self.CART_TEMPLATES:
-            customer_message = self.CART_TEMPLATES[cart_id]
+            if customer_message:
+                message_source = "gemini"
+                llm_used = True
+            else:
+                customer_message = self._template_message(level, cart_id)
         else:
-            customer_message = self.CUSTOMER_TEMPLATES.get(level)
+            customer_message = self._template_message(level, cart_id)
 
         return {
             "customer_message": customer_message,
             "merchant_action": self.MERCHANT_TEMPLATES.get(level, "No action needed."),
+            "message_source": message_source,
+            "llm_used": llm_used,
         }
 
-    def _generate_llm_message(self, level: str, reasons: list) -> str:
+    def _template_message(self, level: str, cart_id: str = None) -> str | None:
+        if cart_id and cart_id in self.CART_TEMPLATES:
+            customer_message = self.CART_TEMPLATES[cart_id]
+        else:
+            customer_message = self.CUSTOMER_TEMPLATES.get(level)
+        return customer_message
+
+    def _generate_llm_message(self, level: str, reasons: list) -> str | None:
         try:
             reasons_text = ", ".join(
                 r.replace("_", " ") if isinstance(r, str) else str(r)
@@ -63,10 +83,8 @@ class ActionAgent:
                 model="gemini-2.0-flash",
                 contents=prompt
             )
-            return response.text.strip()
+            message = (response.text or "").strip()
+            return message or None
         except Exception as e:
             print(f"Gemini error: {e}")
-            return self.CUSTOMER_TEMPLATES.get(level)
-        
-
-        
+            return None

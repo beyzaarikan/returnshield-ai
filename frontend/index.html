@@ -20,17 +20,16 @@
     <a href="cart2.html" class="nav-item"><i class="ti ti-shopping-cart"></i> Cart2 Demo </a>
     <a href="cart3.html" class="nav-item"><i class="ti ti-shopping-bag"></i> Cart3 Demo</a>
     <a href="cart4.html" class="nav-item"><i class="ti ti-history"></i> Cart4 Demo</a>
-    
-    <a href="#" class="nav-item"><i class="ti ti-settings"></i> Settings</a>
     <div class="nav-spacer"></div>
-    <a href="#" class="nav-item"><i class="ti ti-logout"></i> Logout</a>
-    
   </div>
 
   <div class="main">
     <div class="topbar">
       <div class="page-title">Dashboard</div>
-      <div class="search"><i class="ti ti-search"></i> Order search...</div>
+      <label class="search" for="order-search">
+        <i class="ti ti-search"></i>
+        <input id="order-search" type="search" placeholder="Search carts..." aria-label="Search carts">
+      </label>
     </div>
 
     <div class="content">
@@ -38,21 +37,21 @@
       <div class="stat-row">
         <div class="stat-card">
           <div class="stat-icon ic-yellow"><i class="ti ti-alert-triangle"></i></div>
-          <div class="stat-label">High Risk</div>
+          <div class="stat-label">High-risk Carts</div>
           <div class="stat-val" id="stat-high">—</div>
-          <div class="stat-sub">This week</div>
+          <div class="stat-sub">Scored demo batch</div>
         </div>
         <div class="stat-card">
           <div class="stat-icon ic-purple"><i class="ti ti-package"></i></div>
-          <div class="stat-label">Total Orders</div>
+          <div class="stat-label">Analyzed Carts</div>
           <div class="stat-val" id="stat-total">—</div>
-          <div class="stat-sub">This month</div>
+          <div class="stat-sub">Demo scoring batch</div>
         </div>
         <div class="stat-card">
           <div class="stat-icon ic-red"><i class="ti ti-arrow-back"></i></div>
-          <div class="stat-label">Return Rate</div>
+          <div class="stat-label">High-risk Share</div>
           <div class="stat-val" id="stat-return">—</div>
-          <div class="stat-sub">Compared to last month</div>
+          <div class="stat-sub">Share of analyzed carts</div>
         </div>
         <div class="stat-card">
           <div class="stat-icon ic-green"><i class="ti ti-leaf"></i></div>
@@ -66,8 +65,8 @@
         <div class="card">
           <div class="card-header">
             <div>
-              <div class="card-title">Latest Orders</div>
-              <div class="card-sub">High-risk orders are prioritized</div>
+              <div class="card-title">Top Risky Carts</div>
+              <div class="card-sub">Highest-risk carts are prioritized</div>
             </div>
           </div>
           <table>
@@ -89,8 +88,8 @@
         <div class="card">
           <div class="card-header">
             <div>
-              <div class="card-title">AI Alerts</div>
-              <div class="card-sub">Real-time detected risks</div>
+              <div class="card-title">Top Risk Signals</div>
+              <div class="card-sub">From scored cart batch</div>
             </div>
           </div>
           <div id="alerts-list"></div>
@@ -112,6 +111,7 @@
   </div>
 </div>
 
+<script src="js/config.js"></script>
 <script src="js/api.js"></script>
 </body>
 </html>
