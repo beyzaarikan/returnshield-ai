@@ -77,7 +77,7 @@ async function renderOrdersTable() {
   }));
 
   tbody.innerHTML = orders.map(o => `
-    <tr onclick="openDetail('${o.cart_id || o.id}')" style="cursor:pointer">
+    <tr data-cart-row onclick="openDetail('${o.cart_id || o.id}')" style="cursor:pointer">
       <td>${o.customer_name || o.customer || '—'}</td>
       <td>${o.product || o.product_name || '—'}</td>
       <td>${o.order_hour !== undefined ? (typeof o.order_hour === 'number' ? o.order_hour + ':00' : o.order_hour) : '—'}</td>
@@ -85,6 +85,33 @@ async function renderOrdersTable() {
       
     </tr>
   `).join('');
+
+  const searchInput = document.getElementById('order-search');
+  if (searchInput) {
+    const filterRows = () => {
+      const query = searchInput.value.trim().toLowerCase();
+      const rows = Array.from(tbody.querySelectorAll('tr[data-cart-row]'));
+      let visibleCount = 0;
+      rows.forEach(row => {
+        const visible = !query || row.textContent.toLowerCase().includes(query);
+        row.hidden = !visible;
+        if (visible) visibleCount += 1;
+      });
+
+      let emptyRow = tbody.querySelector('tr[data-search-empty]');
+      if (!visibleCount && query) {
+        if (!emptyRow) {
+          emptyRow = document.createElement('tr');
+          emptyRow.dataset.searchEmpty = 'true';
+          emptyRow.innerHTML = '<td colspan="4" class="empty-state">No matching carts.</td>';
+          tbody.appendChild(emptyRow);
+        }
+      } else if (emptyRow) {
+        emptyRow.remove();
+      }
+    };
+    searchInput.oninput = filterRows;
+  }
 
   const total = orders.length;
   const highRisk = orders.filter(o => o.risk_label === 'high').length || 2;
