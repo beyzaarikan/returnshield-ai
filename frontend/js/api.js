@@ -17,17 +17,18 @@ const MOCK_ALERTS = [
 
 const DEMO_CART_IDS = ["CART_0022", "CART_0001", "CART_0002", "CART_0012", "CART_0011"];
 
+function escapeHtml(value) {
+  return String(value ?? '').replace(/[&<>'"]/g, char => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+  }[char]));
+}
+
 // ─── Orders ───────────────────────────────────────────────────────────────────
 
 async function getOrders() {
-  try {
-    const res = await fetch(`${BASE_URL}/api/dashboard/summary/carts?limit=10`);
-    if (!res.ok) throw new Error('API not ready');
-    return await res.json();
-  } catch {
-    console.warn('API connection failed, using mock data.');
-    return MOCK_ORDERS;
-  }
+  const res = await fetch(`${BASE_URL}/api/dashboard/summary/carts?limit=10`);
+  if (!res.ok) throw new Error(`Cart API returned ${res.status}`);
+  return await res.json();
 }
 
 function riskBadge(label) {
@@ -54,11 +55,26 @@ function riskBar(score, label) {
 }
 
 async function renderOrdersTable() {
-  const orders = await getOrders();
   const tbody = document.getElementById('orders-table-body');
   if (!tbody) return;
 
+  let orders;
+  try {
+    orders = await getOrders();
+  } catch (error) {
+    console.error(error);
+    tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Unable to load scored carts.</td></tr>';
+    return;
+  }
+
   orders.sort((a, b) => (b.risk_score || 0) - (a.risk_score || 0));
+  orders = orders.map(o => ({
+    ...o,
+    cart_id: escapeHtml(o.cart_id || o.id),
+    customer_name: escapeHtml(o.customer_name || o.customer || '—'),
+    product_name: escapeHtml(o.product || o.product_name || '—'),
+    order_hour: escapeHtml(o.order_hour !== undefined ? (typeof o.order_hour === 'number' ? o.order_hour + ':00' : o.order_hour) : '—')
+  }));
 
   tbody.innerHTML = orders.map(o => `
     <tr onclick="openDetail('${o.cart_id || o.id}')" style="cursor:pointer">
@@ -107,55 +123,35 @@ async function renderAlerts() {
       <div class="alert-item">
         <div class="alert-dot dot-${a.level === 'medium' ? 'mid' : a.level}"></div>
         <div>
-          <div class="alert-name">${a.name}</div>
-          <div class="alert-desc">${a.desc}</div>
+          <div class="alert-name">${escapeHtml(a.name)}</div>
+          <div class="alert-desc">${escapeHtml(a.desc)}</div>
         </div>
       </div>
     `).join('');
-  } catch {
-    // Fallback: mock alerts
-    list.innerHTML = MOCK_ALERTS.map(a => `
-      <div class="alert-item">
-        <div class="alert-dot dot-${a.level === 'medium' ? 'mid' : a.level}"></div>
-        <div>
-          <div class="alert-name">${a.name}</div>
-          <div class="alert-desc">${a.desc}</div>
-        </div>
-      </div>
-    `).join('');
+  } catch (error) {
+    console.error(error);
+    list.innerHTML = '<div class="empty-state">Unable to load AI alerts.</div>';
   }
 }
 
 // ─── Agent / Risk Analysis ────────────────────────────────────────────────────
 
 async function analyzeCart(orderId, cartId = null) {
-  try {
-    const body = {
-      user_id: 1,
-      cart_items: [
-        { product_id: "DEMO", size: "M", price: 349, hour: 23, review_summary: "runs small" }
-      ]
-    };
-    if (cartId) body.cart_id = cartId;
+  const body = {
+    user_id: 1,
+    cart_items: [
+      { product_id: "DEMO", size: "M", price: 349, hour: 23, review_summary: "runs small" }
+    ]
+  };
+  if (cartId) body.cart_id = cartId;
 
-    const res = await fetch(`${BASE_URL}/api/agent/analyze-cart`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
-    if (!res.ok) throw new Error('Agent API not ready');
-    return await res.json();
-  } catch {
-    console.warn('Agent API connection failed, using mock result.');
-    return {
-      risk_score: 0.84,
-      risk_level: "high",
-      agents_used: ["SignalAgent", "RiskAgent", "ActionAgent"],
-      reasons: ["high_transaction_model_rank", "large_cart_size", "length_issue_signal"],
-      customer_message: "Fit-related signals are elevated. Show size and fit guidance.",
-      merchant_action: "show_size_guidance_before_checkout"
-    };
-  }
+  const res = await fetch(`${BASE_URL}/api/agent/analyze-cart`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  if (!res.ok) throw new Error(`Agent API returned ${res.status}`);
+  return await res.json();
 }
 
 function riskLevelColor(level) {
@@ -171,7 +167,14 @@ async function openDetail(cartId) {
   content.innerHTML = '<p style="text-align:center;color:var(--text-muted);padding:20px">Analyzing...</p>';
   overlay.classList.add('open');
 
-  const result = await analyzeCart(null, cartId);
+  let result;
+  try {
+    result = await analyzeCart(null, cartId);
+  } catch (error) {
+    console.error(error);
+    content.innerHTML = '<p class="empty-state">Unable to analyze this cart.</p>';
+    return;
+  }
   const pct = Math.round(result.risk_score * 100);
 
   const levelLabel = result.risk_level === 'high' ? 'High Risk'
@@ -184,8 +187,8 @@ async function openDetail(cartId) {
       <div>
         <div style="font-weight:600">${levelLabel}</div>
         <div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap;margin-top:6px">
-          ${result.agents_used.map((agent, i) => `
-            <span style="font-size:10px;padding:2px 8px;border-radius:10px;background:var(--accent-light);color:var(--accent);font-weight:500">${agent}</span>
+          ${(result.agents_used || []).map((agent, i) => `
+            <span style="font-size:10px;padding:2px 8px;border-radius:10px;background:var(--accent-light);color:var(--accent);font-weight:500">${escapeHtml(agent)}</span>
             ${i < result.agents_used.length - 1 ? '<span style="color:var(--text-muted);font-size:12px">→</span>' : ''}
           `).join('')}
         </div>
@@ -194,10 +197,10 @@ async function openDetail(cartId) {
 
     <div class="detail-reasons">
       <h4>Risk Factors</h4>
-      ${result.reasons.map(r => `
+      ${(result.reasons || []).map(r => `
         <div class="reason-item">
           <span class="reason-dot">●</span>
-          <span>${typeof r === 'string' ? r.replace(/_/g, ' ') : r}</span>
+          <span>${escapeHtml(typeof r === 'string' ? r.replace(/_/g, ' ') : r)}</span>
         </div>
       `).join('')}
     </div>
@@ -205,14 +208,14 @@ async function openDetail(cartId) {
     ${result.customer_message ? `
       <div class="customer-message-box">
         <div class="label">Customer Message</div>
-        ${result.customer_message}
+        ${escapeHtml(result.customer_message)}
       </div>
     ` : ''}
 
     ${result.merchant_action ? `
       <div class="merchant-action-box">
         <div class="label">Recommended Action</div>
-        ${typeof result.merchant_action === 'string' ? result.merchant_action.replace(/_/g, ' ') : result.merchant_action}
+        ${escapeHtml(typeof result.merchant_action === 'string' ? result.merchant_action.replace(/_/g, ' ') : result.merchant_action)}
       </div>
     ` : ''}
   `;
