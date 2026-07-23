@@ -89,7 +89,7 @@ def top_alerts():
     for _, row in top.iterrows():
         cart_id = str(row["cart_id"])
         level = str(row["risk_level"])
-        level_display = "high" if level == "high" else "mid"
+        level_display = level if level in {"high", "medium", "low"} else "medium"
 
         try:
             reasons = json.loads(row["top_reasons"])

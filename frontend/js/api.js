@@ -104,7 +104,7 @@ async function renderAlerts() {
     const alerts = await res.json();
     list.innerHTML = alerts.map(a => `
       <div class="alert-item">
-        <div class="alert-dot dot-${a.level}"></div>
+        <div class="alert-dot dot-${a.level === 'medium' ? 'mid' : a.level}"></div>
         <div>
           <div class="alert-name">${a.name}</div>
           <div class="alert-desc">${a.desc}</div>
@@ -115,7 +115,7 @@ async function renderAlerts() {
     // Fallback: mock alerts
     list.innerHTML = MOCK_ALERTS.map(a => `
       <div class="alert-item">
-        <div class="alert-dot dot-${a.level}"></div>
+        <div class="alert-dot dot-${a.level === 'medium' ? 'mid' : a.level}"></div>
         <div>
           <div class="alert-name">${a.name}</div>
           <div class="alert-desc">${a.desc}</div>

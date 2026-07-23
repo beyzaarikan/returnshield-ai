@@ -37,7 +37,7 @@ class RiskAgent:
             reasons.append("High-priced item increases expectation gap risk")
 
         score = min(score, 1.0)
-        level = "high" if score >= 0.6 else "mid" if score >= 0.3 else "low"
+        level = "high" if score >= 0.6 else "medium" if score >= 0.3 else "low"
 
         return {
             "risk_score": round(score, 2),
@@ -50,7 +50,7 @@ class RiskAgent:
         import pandas as pd
         features = pd.DataFrame([signals])
         proba = self.model.predict_proba(features)[0][1]
-        level = "high" if proba >= 0.6 else "mid" if proba >= 0.3 else "low"
+        level = "high" if proba >= 0.6 else "medium" if proba >= 0.3 else "low"
         return {
             "risk_score": round(float(proba), 2),
             "risk_level": level,

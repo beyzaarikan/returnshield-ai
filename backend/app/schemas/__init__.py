@@ -6,6 +6,7 @@ class OrderOut(BaseModel):
     id: int
     product_name: str
     product_size: Optional[str]
+    quantity: int
     unit_price: float
     order_hour: int
     is_returned: bool
