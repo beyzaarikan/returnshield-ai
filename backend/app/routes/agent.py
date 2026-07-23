@@ -82,19 +82,16 @@ def top_alerts():
         "rare_color_issue_review_flag": "Color mismatch in reviews",
         "duplicate_variant": "Duplicate product variant",
         "fit_layer_signal": "Fit signal elevated",
-    }
-
-    CART_CUSTOMERS = {
-        "CART_0022": ("Emma R.", "fit & color signals detected"),
-        "CART_0030": ("Sophie L.", "two sizes + fit issue"),
-        "CART_0016": ("James K.", "high risk history + fit signal"),
-        "CART_0025": ("Olivia M.", "two sizes + duplicate variant"),
+        "low_rating_signal_when_available": "Low rating signal",
+        "high_return_history": "High return history",
+        "review_text_size_issue": "Size issue in reviews",
+        "review_text_quality_issue": "Quality issue in reviews",
+        "review_text_color_issue": "Color issue in reviews",
     }
 
     top = df.nlargest(4, "risk_score")
     result = []
     for _, row in top.iterrows():
-        cart_id = str(row["cart_id"])
         level = str(row["risk_level"])
         level_display = level if level in {"high", "medium", "low"} else "medium"
 
@@ -104,11 +101,8 @@ def top_alerts():
         except:
             first_reason = "Risk detected"
 
-        if cart_id in CART_CUSTOMERS:
-            customer, scenario = CART_CUSTOMERS[cart_id]
-            name = f"{customer} — {scenario}"
-        else:
-            name = f"{cart_id} — {first_reason}"
+        customer_id = str(row["mock_user_id"])
+        name = f"Customer {customer_id} — {first_reason}"
 
         desc = str(row["dashboard_message"]) if str(row["dashboard_message"]) != "nan" else "High return risk detected."
 
