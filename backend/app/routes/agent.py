@@ -27,6 +27,7 @@ def analyze_cart(payload: AnalyzeCartRequest, db: Session = Depends(get_db)):
     if payload.cart_id:
         result = get_cart_score(payload.cart_id)
         if result:
+            result["input_items_used"] = False
             add_log({
                 "cart_id": payload.cart_id,
                 "user_id": payload.user_id,
@@ -42,6 +43,12 @@ def analyze_cart(payload: AnalyzeCartRequest, db: Session = Depends(get_db)):
     orchestrator = OrchestratorAgent(db)
     cart_items = [item.dict() for item in payload.cart_items]
     result = orchestrator.analyze(cart_items, payload.user_id, cart_id=payload.cart_id)
+    result.update({
+        "analysis_mode": "live_rules",
+        "data_source": "database_and_request",
+        "score_type": "rule_score_not_calibrated_probability",
+        "input_items_used": True,
+    })
     add_log({
         "cart_id": payload.cart_id or "live",
         "user_id": payload.user_id,

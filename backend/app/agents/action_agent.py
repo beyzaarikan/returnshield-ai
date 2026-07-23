@@ -6,7 +6,7 @@ class ActionAgent:
 
     CUSTOMER_TEMPLATES = {
         "high": "Fit-related signals are elevated for this item. We recommend checking the size guide and recent reviews before completing your purchase.",
-        "mid": "Some customers have shared feedback about the fit of this item. Taking a moment to review the size guide may help you make the right choice.",
+        "medium": "Some customers have shared feedback about the fit of this item. Taking a moment to review the size guide may help you make the right choice.",
         "low": None,
     }
 
@@ -19,7 +19,7 @@ class ActionAgent:
 
     MERCHANT_TEMPLATES = {
         "high": "Add fit information to the product description and highlight the size guide.",
-        "mid": "Make the review summary more visible on the product page.",
+        "medium": "Make the review summary more visible on the product page.",
         "low": "No action needed.",
     }
 
@@ -33,7 +33,7 @@ class ActionAgent:
         level = risk_result["risk_level"]
         reasons = risk_result.get("top_factors", [])
 
-        if self.use_llm and level in ("high", "mid", "medium") and reasons:
+        if self.use_llm and level in ("high", "medium") and reasons:
             customer_message = self._generate_llm_message(level, reasons)
         elif cart_id and cart_id in self.CART_TEMPLATES:
             customer_message = self.CART_TEMPLATES[cart_id]
@@ -67,6 +67,3 @@ class ActionAgent:
         except Exception as e:
             print(f"Gemini error: {e}")
             return self.CUSTOMER_TEMPLATES.get(level)
-        
-
-        
