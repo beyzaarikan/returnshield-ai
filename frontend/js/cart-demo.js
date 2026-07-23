@@ -26,6 +26,13 @@ function toggleSizeGuide() { toggleBox('cart-warning'); }
 function toggleReviewSummary() { toggleBox('review-summary-box'); }
 function suggestAlternativeSize() { toggleBox('alt-size-box'); }
 
+function showDemoCheckout() {
+  const status = document.getElementById('checkout-status');
+  if (!status) return;
+  status.textContent = 'Demo checkout only — no payment or order was created.';
+  status.hidden = false;
+}
+
 async function loadCartAnalysis(cartId) {
   const demo = CART_DEMOS[cartId];
   if (!demo) throw new Error(`Unknown demo cart: ${cartId}`);
@@ -53,6 +60,7 @@ function showAnalysisError(error) {
 
 window.addEventListener('DOMContentLoaded', async () => {
   const cartId = document.body.dataset.cartId;
+  document.querySelector('[data-demo-checkout]')?.addEventListener('click', showDemoCheckout);
   const signalTags = document.getElementById('signal-tags');
   if (signalTags) signalTags.style.display = 'flex';
 

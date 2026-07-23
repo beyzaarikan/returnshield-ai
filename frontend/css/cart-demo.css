@@ -150,6 +150,17 @@ body {
 .cart-btn.primary { background: var(--primary); border-color: var(--primary); font-weight: 600; color: #000; }
 .cart-btn.primary:hover { opacity: 0.9; }
 
+.demo-checkout-status {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--success-light);
+  border-left: 3px solid var(--success);
+  color: var(--text);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
 .back-link {
   display: block;
   text-align: center;
