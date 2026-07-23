@@ -44,7 +44,7 @@
     .impulse-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: var(--text-muted); margin-bottom: 12px; }
   </style>
 </head>
-<body>
+<body data-cart-id="CART_0007">
   <div class="store-header">
     <div class="store-logo">↩</div>
     <div>
@@ -122,51 +122,6 @@
     <a href="index.html" class="back-link">← Back to dashboard</a>
   </div>
 
-  <script>
-    const BASE_URL = 'http://localhost:8000';
-
-    async function loadCartWarning() {
-      try {
-        const res = await fetch(`${BASE_URL}/api/agent/analyze-cart`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            user_id: 3,
-            cart_id: "CART_0007",
-            cart_items: []
-          })
-        });
-        if (!res.ok) throw new Error('API not ready');
-        return await res.json();
-      } catch {
-        return {
-          risk_score: 0.93,
-          risk_level: 'high',
-          customer_message: 'Your cart contains several items. Some of them have length-related feedback from other customers — consider checking reviews before purchasing.'
-        };
-      }
-    }
-
-    function toggleSizeGuide() { document.getElementById('cart-warning').classList.toggle('show'); }
-    function toggleReviewSummary() { document.getElementById('review-summary-box').classList.toggle('show'); }
-    function suggestAlternativeSize() { document.getElementById('alt-size-box').classList.toggle('show'); }
-
-    window.addEventListener('DOMContentLoaded', async () => {
-      const result = await loadCartWarning();
-      const level = result.risk_level || 'low';
-      const dotClass = level === 'high' ? 'high' : level === 'medium' || level === 'mid' ? 'medium' : 'low';
-      const labelStr = level === 'high' ? 'High Return Risk' : level === 'medium' || level === 'mid' ? 'Medium Return Risk' : 'Low Return Risk';
-
-      document.getElementById('risk-dot').className = `risk-dot ${dotClass}`;
-      document.getElementById('risk-label-text').textContent = labelStr;
-      document.getElementById('risk-score-num').textContent = `${Math.round((result.risk_score || 0) * 100)}%`;
-      document.getElementById('risk-indicator').classList.add('show');
-
-      if (result.customer_message) {
-        document.getElementById('cart-warning-text').textContent = result.customer_message;
-        setTimeout(() => { document.getElementById('cart-warning').classList.add('show'); }, 700);
-      }
-    });
-  </script>
+  <script src="js/cart-demo.js"></script>
 </body>
 </html>

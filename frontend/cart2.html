@@ -181,7 +181,7 @@
     .back-link:hover { color: var(--text); }
   </style>
 </head>
-<body>
+<body data-cart-id="CART_0022">
 
   <div class="store-header">
     <div class="store-logo">↩</div>
@@ -255,76 +255,6 @@
     <a href="index.html" class="back-link">← Back to dashboard</a>
   </div>
 
-  <script>
-    const BASE_URL = 'http://localhost:8000';
-
-    async function loadCartWarning() {
-      try {
-        const res = await fetch(`${BASE_URL}/api/agent/analyze-cart`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            user_id: 2,
-            cart_id: "CART_0022",
-            cart_items: [
-              { product_id: "DEMO-FLORAL-DRESS", size: "M", price: 89.90, hour: 23, review_summary: "runs short, color looks different" }
-            ]
-          })
-        });
-        if (!res.ok) throw new Error('API not ready');
-        return await res.json();
-      } catch {
-        console.warn('API not available, using fallback.');
-        return {
-          risk_score: 0.99,
-          risk_level: 'high',
-          customer_message: 'Fit-related signals are elevated. Show size and fit guidance.',
-          reasons: ["high_transaction_model_rank", "length_issue_signal", "rare_color_issue_review_flag"]
-        };
-      }
-    }
-
-    function toggleSizeGuide() {
-      document.getElementById('cart-warning').classList.toggle('show');
-    }
-    function toggleReviewSummary() {
-      document.getElementById('review-summary-box').classList.toggle('show');
-    }
-    function suggestAlternativeSize() {
-      document.getElementById('alt-size-box').classList.toggle('show');
-    }
-
-    window.addEventListener('DOMContentLoaded', async () => {
-      const result = await loadCartWarning();
-
-      // Signal tags göster
-      document.getElementById('signal-tags').style.display = 'flex';
-
-      // Risk indicator
-      const indicator = document.getElementById('risk-indicator');
-      const dot = document.getElementById('risk-dot');
-      const labelText = document.getElementById('risk-label-text');
-      const scoreNum = document.getElementById('risk-score-num');
-
-      const level = result.risk_level || 'low';
-      const dotClass = level === 'high' ? 'high' : level === 'medium' || level === 'mid' ? 'medium' : 'low';
-      const labelStr = level === 'high' ? 'High Return Risk'
-        : level === 'medium' || level === 'mid' ? 'Medium Return Risk'
-        : 'Low Return Risk';
-
-      dot.className = `risk-dot ${dotClass}`;
-      labelText.textContent = labelStr;
-      scoreNum.textContent = `${Math.round((result.risk_score || 0) * 100)}%`;
-      indicator.classList.add('show');
-
-      // Uyarı mesajı
-      if (result.customer_message) {
-        document.getElementById('cart-warning-text').textContent = result.customer_message;
-        setTimeout(() => {
-          document.getElementById('cart-warning').classList.add('show');
-        }, 700);
-      }
-    });
-  </script>
+  <script src="js/cart-demo.js"></script>
 </body>
 </html>

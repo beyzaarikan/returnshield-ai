@@ -153,7 +153,7 @@
     .back-link:hover { color: var(--text); }
   </style>
 </head>
-<body>
+<body data-cart-id="CART_0001">
 
   <div class="store-header">
     <div class="store-logo">↩</div>
@@ -223,75 +223,6 @@
     <a href="index.html" class="back-link">← Back to dashboard</a>
   </div>
 
-  <script>
-    const BASE_URL = 'http://localhost:8000';
-
-    async function loadCartWarning() {
-      try {
-        const res = await fetch(`${BASE_URL}/api/agent/analyze-cart`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            user_id: 1,
-            cart_id: "CART_0001",
-            cart_items: [
-              { product_id: "DEMO-DRESS", size: "M", price: 49.90, hour: 23, review_summary: "runs small" },
-              { product_id: "DEMO-DRESS", size: "L", price: 49.90, hour: 23, review_summary: "" }
-            ]
-          })
-        });
-        if (!res.ok) throw new Error('API not ready');
-        return await res.json();
-      } catch {
-        console.warn('API not available, using fallback.');
-        return {
-          risk_score: 0.76,
-          risk_level: 'medium',
-          customer_message: 'This item runs small for some customers. Would you like to check the size guide before purchasing?'
-        };
-      }
-    }
-
-    function toggleSizeGuide() {
-      document.getElementById('cart-warning').classList.toggle('show');
-    }
-
-    function toggleReviewSummary() {
-      document.getElementById('review-summary-box').classList.toggle('show');
-    }
-
-    function suggestAlternativeSize() {
-      document.getElementById('alt-size-box').classList.toggle('show');
-    }
-
-    window.addEventListener('DOMContentLoaded', async () => {
-      const result = await loadCartWarning();
-
-      // Risk indicator
-      const indicator = document.getElementById('risk-indicator');
-      const dot = document.getElementById('risk-dot');
-      const labelText = document.getElementById('risk-label-text');
-      const scoreNum = document.getElementById('risk-score-num');
-
-      const level = result.risk_level || 'low';
-      const dotClass = level === 'high' ? 'high' : level === 'medium' || level === 'mid' ? 'medium' : 'low';
-      const labelStr = level === 'high' ? 'High Return Risk'
-        : level === 'medium' || level === 'mid' ? 'Medium Return Risk'
-        : 'Low Return Risk';
-
-      dot.className = `risk-dot ${dotClass}`;
-      labelText.textContent = labelStr;
-      scoreNum.textContent = `${Math.round((result.risk_score || 0) * 100)}%`;
-      indicator.classList.add('show');
-
-      // Warning message
-      if (result.customer_message) {
-        document.getElementById('cart-warning-text').textContent = result.customer_message;
-        setTimeout(() => {
-          document.getElementById('cart-warning').classList.add('show');
-        }, 700);
-      }
-    });
-  </script>
+  <script src="js/cart-demo.js"></script>
 </body>
 </html>
