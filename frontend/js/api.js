@@ -175,7 +175,7 @@ async function openDetail(cartId) {
     content.innerHTML = '<p class="empty-state">Unable to analyze this cart.</p>';
     return;
   }
-  const pct = Math.round(result.risk_score * 100);
+  const score = Number(result.risk_score || 0).toFixed(2);
 
   const levelLabel = result.risk_level === 'high' ? 'High Risk'
     : result.risk_level === 'medium' || result.risk_level === 'mid' ? 'Medium Risk'
@@ -183,9 +183,9 @@ async function openDetail(cartId) {
 
   content.innerHTML = `
     <div class="detail-score-row">
-      <div class="detail-score-big" style="color:${riskLevelColor(result.risk_level)}">${pct}%</div>
+      <div class="detail-score-big" style="color:${riskLevelColor(result.risk_level)}">${score}</div>
       <div>
-        <div style="font-weight:600">${levelLabel}</div>
+        <div style="font-weight:600">${levelLabel} <span style="font-size:11px;color:var(--text-muted)">(risk score)</span></div>
         <div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap;margin-top:6px">
           ${(result.agents_used || []).map((agent, i) => `
             <span style="font-size:10px;padding:2px 8px;border-radius:10px;background:var(--accent-light);color:var(--accent);font-weight:500">${escapeHtml(agent)}</span>

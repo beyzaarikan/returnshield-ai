@@ -66,7 +66,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 
     document.getElementById('risk-dot').className = `risk-dot ${dotClass}`;
     document.getElementById('risk-label-text').textContent = label;
-    document.getElementById('risk-score-num').textContent = `${Math.round((result.risk_score || 0) * 100)}%`;
+    document.getElementById('risk-score-num').textContent = `Score ${Number(result.risk_score || 0).toFixed(2)}`;
     document.getElementById('risk-indicator').classList.add('show');
 
     if (result.customer_message) {
