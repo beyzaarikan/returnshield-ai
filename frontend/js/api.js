@@ -1,20 +1,5 @@
 const BASE_URL = window.RETURNSHIELD_CONFIG.apiBaseUrl;
 
-const MOCK_ORDERS = [
-  { id: 1, customer: 'Alice J.', product: 'Oversized Sweatshirt M+L', order_hour: '23:14', risk_score: 0.85, risk_label: 'high', is_returned: true },
-  { id: 2, customer: 'Sarah W.', product: 'Dress S+M', order_hour: '01:32', risk_score: 0.78, risk_label: 'high', is_returned: true },
-  { id: 3, customer: 'Emma B.', product: 'Slim Fit Trousers', order_hour: '19:45', risk_score: 0.52, risk_label: 'mid', is_returned: false },
-  { id: 4, customer: 'Michael D.', product: 'Sport Shoes', order_hour: '14:20', risk_score: 0.18, risk_label: 'low', is_returned: false },
-  { id: 5, customer: 'James S.', product: 'Winter Jacket', order_hour: '11:05', risk_score: 0.12, risk_label: 'low', is_returned: false },
-];
-
-const MOCK_ALERTS = [
-  { level: 'high', name: 'Alice J. — night + 2 sizes', desc: 'Same product added in size M and L. Order placed at 23:14.' },
-  { level: 'high', name: 'Sarah W. — repeat return', desc: '4 returns in the last 30 days. Order placed at 01:32.' },
-  { level: 'mid', name: 'Emma B. — review warning', desc: 'Order for a product with "runs small" reviews.' },
-  { level: 'mid', name: 'Can T. — price anomaly', desc: 'First-time order for a high-priced item.' },
-];
-
 const DEMO_CART_IDS = ["CART_0022", "CART_0001", "CART_0002", "CART_0012", "CART_0011"];
 
 function escapeHtml(value) {
