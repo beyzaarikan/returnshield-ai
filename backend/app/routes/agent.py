@@ -1,6 +1,8 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
+from sqlalchemy import desc
 from pydantic import BaseModel
+from datetime import datetime
 from app.database import get_db
 from app.models import ReturnPrediction
 from app.agents.orchestrator import OrchestratorAgent
@@ -22,6 +24,16 @@ class AnalyzeCartRequest(BaseModel):
     cart_items: list[CartItem]
     cart_id: str | None = None  # demo cart_id varsa CSV'den okur
 
+class PredictionOut(BaseModel):
+    id: int
+    cart_id: str | None = None
+    risk_score: float
+    risk_label: str
+    analysis_mode: str | None = None
+    score_type: str | None = None
+    explanation: str | None = None
+    created_at: datetime | None = None
+
 
 @router.post("/analyze-cart")
 def analyze_cart(payload: AnalyzeCartRequest, db: Session = Depends(get_db)):
@@ -30,7 +42,7 @@ def analyze_cart(payload: AnalyzeCartRequest, db: Session = Depends(get_db)):
         result = get_cart_score(payload.cart_id)
         if result:
             result["input_items_used"] = False
-            _persist_prediction(db, result, payload.cart_id)
+            result["prediction_id"] = _persist_prediction(db, result, payload.cart_id)
             add_log(db, {
                 "cart_id": payload.cart_id,
                 "user_id": payload.user_id,
@@ -55,7 +67,7 @@ def analyze_cart(payload: AnalyzeCartRequest, db: Session = Depends(get_db)):
         "score_type": "rule_score_not_calibrated_probability",
         "input_items_used": True,
     })
-    _persist_prediction(db, result, payload.cart_id)
+    result["prediction_id"] = _persist_prediction(db, result, payload.cart_id)
     add_log(db, {
         "cart_id": payload.cart_id or "live",
         "user_id": payload.user_id,
@@ -74,6 +86,13 @@ def analyze_cart(payload: AnalyzeCartRequest, db: Session = Depends(get_db)):
 def get_agent_logs(db: Session = Depends(get_db)):
     return get_logs(db)
 
+@router.get("/predictions", response_model=list[PredictionOut])
+def get_predictions(limit: int = 50, db: Session = Depends(get_db)):
+    safe_limit = max(1, min(limit, 100))
+    return db.query(ReturnPrediction).order_by(
+        desc(ReturnPrediction.created_at)
+    ).limit(safe_limit).all()
+
 def _persist_prediction(db: Session, result: dict, cart_id: str | None):
     prediction = ReturnPrediction(
         cart_id=cart_id,
@@ -89,6 +108,8 @@ def _persist_prediction(db: Session, result: dict, cart_id: str | None):
     )
     db.add(prediction)
     db.commit()
+    db.refresh(prediction)
+    return prediction.id
 
 @router.get("/top-alerts")
 def top_alerts():
