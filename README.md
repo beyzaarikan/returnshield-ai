@@ -224,7 +224,138 @@ AI Alerts'teki cart_id isimleri daha okunabilir hale getirilecek
 
 # Sprint 3
 
-Final entegrasyon, demo senaryosu, sunum hazırlığı yapılacak
+GitHub Projects board'unda kartlar Sprint 3 → to-do → In Progress  → Done kolonlarında takip edilmektedir. Her kart bir görevi temsil eder ve ilgili kişiye atanmıştır.
+
+Backlog Düzeni ve Story Seçimleri
+Backlog, öncelikli görevlere göre düzenlenmiş ve her sprint için tahmin edilen puan sınırını aşmayacak şekilde seçimler yapılmıştır. Görevler backend, frontend ve data/ML olmak üzere üç sorumluluk alanına bölünmüş; her alan kendi içinde bağımsız çalışabilecek şekilde tasarlanmıştır. Her sprint başında takım olarak görev tahmini yapılmış, story'ler task'lere bölünmüş ve GitHub Projects board'unda ilgili kişiye atanmıştır. Sprint içinde tamamlanan görevler "Done" kolonuna taşınmış, tamamlanamayan görevler bir sonraki sprint backlog'una aktarılmıştır.
+
+Sprint 1 seçimleri: Temel altyapı — repo kurulumu, FastAPI + Docker, veritabanı, dashboard layout, EDA notebook.
+
+Sprint 2 seçimleri: Core AI — agent mimarisi, CSV entegrasyonu, risk paneli, müşteri sepet ekranı, ML pipeline tamamlama.
+
+Sprint 3 seçimleri: Cila ve teslim — Gemini entegrasyonu, memory log, test suite, ek demo senaryoları, README, video.
+
+ ### Sprint Board Update Screenshots
+<img width="1911" height="814" alt="image" src="https://github.com/user-attachments/assets/bd52fae0-8926-453f-9e87-f03e270f7bc2" />
+<img width="1878" height="849" alt="image" src="https://github.com/user-attachments/assets/2b12f9e7-228f-47d6-895c-83906403d2b5" />
+<img width="1915" height="815" alt="image" src="https://github.com/user-attachments/assets/0471b5a9-c88a-4528-8947-fd22adb601e3" />
+
+## *Daily Scrum*
+Daily Scrum toplantıları zamansal sebeplerden ötürü WhatsApp üzerinden yazılı olarak da yapılmaktadır.
+
+BEYZA (Backend / Scrum Master)
+Gün 1
+Dün: Sprint 2 tamamlandı, tüm dökümanlar GitHub'a yüklendi
+Bugün: Gemini API entegrasyonu — action_agent.py güncellendi, google-generativeai paketi eklendi, Docker rebuild yapıldı
+
+Gün 2
+Dün: Gemini entegrasyonu çalışıyor, customer_message dinamik üretiliyor.
+Bugün: Agent memory log sistemi eklendi (/api/agent/logs endpoint'i), her analyze-cart çağrısı loglanıyor
+
+Gün 3
+Dün: Memory log sistemi tamamlandı, Swagger'da test edildi
+Bugün: top-alerts endpoint'ine müşteri ismi mapping'i eklendi, AI Alerts paneli okunabilir hale getirildi
+
+Gün 4
+Dün: README tamamlandı, tüm dosyalar son kontrol yapıldı
+Bugün: Demo provası yapıldı, Sprint 3 dökümanları hazırlandı, video çekimi
+
+OSMAN (Data / ML)
+Gün 1
+Dün: Sprint 2 notebook'ları ve dökümanlar GitHub'a yüklendi
+Bugün: final_model_summary.md tamamlandı — veri kaynakları, model sınırlılıkları, prototip notu
+
+Gün 2
+Dün: Model özeti tamamlandı
+Bugün: Demo sepet senaryoları için ek analiz yapıldı, demo_cart_cases.md güncellendi
+
+Gün 3
+Dün: Demo senaryoları netleştirildi
+Bugün: Sunum slaytları için model metrikleri ve SHAP/feature importance grafikleri hazırlandı
+
+Gün 4
+Dün: Sunum materyalleri hazırlandı
+Bugün: Demo provası yapıldı, veri sınırlılıkları soruları için hazırlık yapıldı
+
+TAİBENUR (Frontend)
+Gün 1
+Dün: Sprint 2 frontend değişiklikleri tamamlandı
+Bugün: cart3.html oluşturuldu — impulse buying senaryosu, 4 ürünlü sepet, length issue sinyali
+
+Gün 2
+Dün: cart3.html tamamlandı ve test edildi
+Bugün: cart4.html oluşturuldu — repeat returner senaryosu, fit sinyali yüksek müşteri
+
+Gün 3
+Dün: cart4.html tamamlandı
+Bugün: Sidebar'a cart3 ve cart4 linkleri eklendi, tüm 4 demo senaryosu test edildi
+
+Gün 4
+Dün: Tüm demo sayfaları test edildi
+Bugün: Status kolonu kaldırıldı, Risk Analysis kolonuna "Click to analyze" eklendi, son UI düzenlemeleri yapıldı
+
+## *Sprint 3 Review'da alınan kararlar:*
+
+Her sprint sonunda tamamlanan görevler ve çalışan ürün ekran görüntüleri ile birlikte gözden geçirilir. Sprint Review notları acceptance criteria'ların karşılanıp karşılanmadığı kontrol edilerek tutulur.
+
+Backend (Beyza):
+
+Gemini API entegrasyonu — action_agent.py LLM destekli mesaj üretiyor; quota/key yoksa template fallback devreye giriyor, message_source ve llm_used alanları response'ta dönüyor
+GET /api/agent/logs — memory log sistemi, her analyze-cart çağrısı loglanıyor
+top-alerts endpoint'i — cart_id yerine müşteri isimleri gösteriliyor
+CORS FRONTEND_ORIGINS ile sınırlandırıldı
+backend/.env opsiyonel hale getirildi
+
+Backend (Osman):
+
+Docker başlangıç akışı iyileştirildi — PostgreSQL healthcheck, otomatik migration ve seed
+/health ve /ready endpoint'leri eklendi
+API response sözleşmeleri standardize edildi — risk seviyeleri low/medium/high, analysis_mode, data_source, scoring_mode alanları eklendi
+15 otomatik test yazıldı ve geçti (pytest tests/)
+Pydantic v2, SQLAlchemy 2 deprecated kullanımlar düzeltildi
+README final düzeni — kurulum, scoring açıklaması, demo CSV vs canlı baseline ayrımı
+
+Frontend (Taibenur):
+
+cart3.html — impulse buying senaryosu, 4 ürün, length issue (%93 High Risk)
+cart4.html — repeat returner senaryosu, fit sinyali (%95 High Risk)
+Status kolonu kaldırıldı, "Click to analyze" eklendi
+Sidebar sadeleştirildi
+
+## Acceptance Criteria:
+
+ docker compose up --build -d ile sistem ayağa kalkıyor
+ /health ve /ready endpoint'leri başarılı dönüyor
+ 15 test geçti
+ Demo videosu çekildi
+ 4 demo senaryosu çalışıyor
+ Gemini çalışınca LLM mesajı, quota dolunca template fallback devreye giriyor
+
+## *Sprint Retrospective'de alınan kararlar*
+
+Sprint Retrospective notları:
+
+## Ne iyi gitti?
+Gemini entegrasyonu sorunsuz tamamlandı, customer_message artık dinamik ve doğal
+Memory log sistemi hızla kuruldu, "agentic hafıza" iddiası kanıtlanabilir hale geldi
+4 farklı demo senaryosu birbirini tamamlıyor — jüriye geniş bir bakış açısı sunuluyor
+Tüm ekip demo provasına katıldı, akış netleşti
+
+## Ne zorladı?
+GitHub Projects linki harici kullanıcılara açık olmadığı için board paylaşımı sorun yarattı
+Local ortamda çalışıyor, canlı deploy yapılamadı
+Gemini API bazen yavaş yanıt veriyor, demo sırasında bekleme süresi oluşabiliyor
+Neyi değiştirmeliyiz?
+Gelecekte deploy adımı (Railway/Render) sprint 2'ye alınmalı, sprint 3'te hazır olmalı
+Scrum board için baştan Miro veya Notion kullanılmalı, link paylaşımı sorunsuz olur
+Gemini yanıt süresi için timeout ve fallback mekanizması iyileştirilmeli
+
+## Genel Değerlendirme
+ReturnShield AI, 3 sprint boyunca sıfırdan tam çalışan bir agentic AI sistemine dönüştü. Backend agent mimarisi, gerçek ML pipeline çıktısı ve interaktif demo sayfaları ile projenin tüm teknik kriterleri karşılandı. Gemini LLM entegrasyonu ve memory log sistemi ile "agentic" yapı somut kanıtlarla gösterilebildi.
+
+*Ürün Durumu: Ekran görüntüleri:
+<img width="1600" height="774" alt="WhatsApp Image 2026-07-23 at 15 15 58" src="https://github.com/user-attachments/assets/c0e63af6-2ae4-457b-a460-b983747a8ae3" />
+<img width="668" height="907" alt="WhatsApp Image 2026-07-23 at 15 15 58 (1)" src="https://github.com/user-attachments/assets/0c74089e-a917-421a-bcae-0996ed7ec2ce" />
 
 
 ### Gereksinimler
