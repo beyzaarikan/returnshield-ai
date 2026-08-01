@@ -32,10 +32,11 @@ function riskBar(score, label) {
     return '<span style="color:var(--text-muted);font-size:11px">—</span>';
   }
   const fillClass = label === 'high' ? 'fill-high' : label === 'mid' || label === 'medium' ? 'fill-mid' : 'fill-low';
-  const pct = Math.round(score * 100);
+  const numericScore = Math.max(0, Math.min(Number(score), 1));
+  const pct = Math.round(numericScore * 100);
   return `<div class="score-wrap">
     <div class="score-bar"><div class="score-fill ${fillClass}" style="width:${pct}%"></div></div>
-    ${pct}%
+    <span>Score ${numericScore.toFixed(2)}</span>
   </div>`;
 }
 
@@ -48,7 +49,7 @@ async function renderOrdersTable() {
     orders = await getOrders();
   } catch (error) {
     console.error(error);
-    tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Unable to load scored carts.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">Unable to load scored carts.</td></tr>';
     return;
   }
 
@@ -66,8 +67,9 @@ async function renderOrdersTable() {
       <td>${o.customer_name || o.customer || '—'}</td>
       <td>${o.product || o.product_name || '—'}</td>
       <td>${o.order_hour !== undefined ? (typeof o.order_hour === 'number' ? o.order_hour + ':00' : o.order_hour) : '—'}</td>
+      <td>${riskBar(o.risk_score, o.risk_level)}</td>
+      <td>${riskBadge(o.risk_level)}</td>
       <td><span style="font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:4px">🔍 Click to analyze</span></td>
-      
     </tr>
   `).join('');
 
@@ -88,7 +90,7 @@ async function renderOrdersTable() {
         if (!emptyRow) {
           emptyRow = document.createElement('tr');
           emptyRow.dataset.searchEmpty = 'true';
-          emptyRow.innerHTML = '<td colspan="4" class="empty-state">No matching carts.</td>';
+          emptyRow.innerHTML = '<td colspan="6" class="empty-state">No matching carts.</td>';
           tbody.appendChild(emptyRow);
         }
       } else if (emptyRow) {
@@ -192,6 +194,24 @@ async function openDetail(cartId) {
   const levelLabel = result.risk_level === 'high' ? 'High Risk'
     : result.risk_level === 'medium' || result.risk_level === 'mid' ? 'Medium Risk'
     : 'Low Risk';
+  const reasonDetails = Array.isArray(result.reason_details) ? result.reason_details : [];
+  const displayedReasons = reasonDetails.length
+    ? reasonDetails.map(detail => ({
+        code: detail.code || 'risk_signal',
+        message: detail.message || detail.code || 'Risk signal detected',
+        severity: detail.severity
+      }))
+    : (result.reasons || []).map(reason => ({
+        code: typeof reason === 'string' ? reason : 'risk_signal',
+        message: typeof reason === 'string' ? reason.replace(/_/g, ' ') : String(reason)
+      }));
+  const metadata = [
+    ['Analysis mode', result.analysis_mode],
+    ['Scoring mode', result.scoring_mode],
+    ['Data source', result.data_source],
+    ['Message source', result.message_source],
+    ['LLM used', result.llm_used ? 'Yes' : 'No']
+  ].filter(([, value]) => value !== undefined && value !== null && value !== '');
 
   content.innerHTML = `
     <div class="detail-score-row">
@@ -207,12 +227,24 @@ async function openDetail(cartId) {
       </div>
     </div>
 
+    <div class="detail-meta">
+      ${metadata.map(([label, value]) => `
+        <div class="detail-meta-item">
+          <span>${escapeHtml(label)}</span>
+          <strong>${escapeHtml(value)}</strong>
+        </div>
+      `).join('')}
+    </div>
+
     <div class="detail-reasons">
       <h4>Risk Factors</h4>
-      ${(result.reasons || []).map(r => `
+      ${displayedReasons.map(reason => `
         <div class="reason-item">
           <span class="reason-dot">●</span>
-          <span>${escapeHtml(typeof r === 'string' ? r.replace(/_/g, ' ') : r)}</span>
+          <span>
+            <strong>${escapeHtml(reason.code.replace(/_/g, ' '))}</strong>
+            <small>${escapeHtml(reason.message)}${typeof reason.severity === 'number' ? ` · severity ${reason.severity.toFixed(2)}` : ''}</small>
+          </span>
         </div>
       `).join('')}
     </div>

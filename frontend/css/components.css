@@ -192,6 +192,17 @@ tr:hover td { background: #fafafa; }
   border-radius: var(--radius-sm); margin-bottom: 16px;
 }
 .detail-score-big { font-size: 28px; font-weight: 700; }
+.detail-meta {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px; margin-bottom: 16px;
+}
+.detail-meta-item {
+  display: flex; flex-direction: column; gap: 2px;
+  padding: 7px 9px; background: var(--bg-page);
+  border-radius: var(--radius-sm); font-size: 10px;
+}
+.detail-meta-item span { color: var(--text-muted); text-transform: uppercase; letter-spacing: .03em; }
+.detail-meta-item strong { font-size: 11px; font-weight: 500; overflow-wrap: anywhere; }
 
 .detail-reasons { margin-bottom: 16px; }
 .detail-reasons h4 {
@@ -205,6 +216,8 @@ tr:hover td { background: #fafafa; }
 }
 .reason-item:last-child { border-bottom: none; }
 .reason-dot { color: var(--danger); flex-shrink: 0; }
+.reason-item span:last-child { display: flex; flex-direction: column; gap: 2px; }
+.reason-item small { color: var(--text-muted); font-size: 11px; text-transform: none; }
 
 .customer-message-box {
   background: var(--primary-light);
