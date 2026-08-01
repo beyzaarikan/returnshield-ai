@@ -356,8 +356,9 @@ Tüm ekip demo provasına katıldı, akış netleşti.
 +Gemini LLM entegrasyonu ve memory log sistemi ile "agentic" yapı somut kanıtlarla gösterilebildi.
 
 *Ürün Durumu: Ekran görüntüleri:
-<img width="1600" height="774" alt="WhatsApp Image 2026-07-23 at 15 15 58" src="https://github.com/user-attachments/assets/c0e63af6-2ae4-457b-a460-b983747a8ae3" />
-<img width="668" height="907" alt="WhatsApp Image 2026-07-23 at 15 15 58 (1)" src="https://github.com/user-attachments/assets/0c74089e-a917-421a-bcae-0996ed7ec2ce" />
+<img width="1919" height="615" alt="Ekran görüntüsü 2026-08-01 192528" src="https://github.com/user-attachments/assets/ddff5e17-7c36-4b6a-9093-a599eb66257f" />
+<img width="904" height="733" alt="Ekran görüntüsü 2026-08-01 192538" src="https://github.com/user-attachments/assets/6a3ae8cd-c5d5-4d77-9ec7-b00eefaa8492" />
+<img width="470" height="859" alt="Ekran görüntüsü 2026-08-01 192300" src="https://github.com/user-attachments/assets/024736cc-fd44-4e63-a3c6-94145420736b" />
 
 
 ### Gereksinimler
